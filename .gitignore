@@ -1,3 +1,6 @@
+# vscode
+.vscode
+
 # Logs
 logs
 *.log
@@ -57,3 +60,5 @@ typings/
 # dotenv environment variables file
 .env
 
+# mac 
+.DS_STORE
