@@ -2,14 +2,14 @@
 
 let expect = require('chai').expect
 
-let gameState = require('../../data/gameState')
+let worldState = require('../../data/worldState')
 
-describe('GameState', function() {
+describe('worldState', function() {
   let sampleGames = getSampleGames()
 
   describe('games', function() {
     it('set/get', function() {
-      let gs = new gameState()
+      let gs = new worldState()
       gs.setGames(sampleGames)
 
       let gamePks = Object.keys(sampleGames)

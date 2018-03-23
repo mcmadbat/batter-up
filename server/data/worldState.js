@@ -1,7 +1,7 @@
 'use strict'
 
-// the internal game state
-class GameState {
+// the internal world state
+class WorldState {
   constructor () {
     // (gamePk: game)
     this.games = {}
@@ -26,4 +26,4 @@ class GameState {
   }
 }
 
-module.exports = GameState
+module.exports = WorldState
