@@ -6,7 +6,7 @@ let gameParser = require('./gameParser')
 let parser = {}
 
 parser.parse = data => {
-  let response = {}
+  let response = []
 
   let today = data.dates[0]
 
@@ -15,7 +15,7 @@ parser.parse = data => {
   let games = data.dates[0].games
 
   games.forEach(game => {
-    response[game.gamePk] = gameParser.parse(game)
+    response.push(gameParser.parse(game))
   })
 
   return response
