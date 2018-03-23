@@ -25,8 +25,11 @@ client.getGames = () => {
 
   return request(options)
           .then(response => {
-            scheduleParser.parse(response)
+            return scheduleParser.parse(response)
           })
 }
+
+// returns: promise that resolves to the gameData for a given pk
+
 
 module.exports = client
