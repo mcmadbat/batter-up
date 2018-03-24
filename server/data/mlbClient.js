@@ -3,6 +3,7 @@
 // parsers
 let scheduleParser = require('./parser/scheduleParser')
 let lineupParser = require('./parser/lineupParser')
+let playerParser = require('./parser/playerParser')
 
 const apiRootURL = `http://statsapi.mlb.com/api/v1/`
 const sportId = 1
@@ -57,6 +58,27 @@ client.getGameInfo = game => {
   return request(options)
     .then(response => {
       return lineupParser.parse(game, response)
+    })
+}
+
+// returns a promise that resolves to the information about players
+client.getPlayerInfo = players => {
+  let uri = `${apiRootURL}people`
+
+  // mlb requires comma delimetered qs
+  let personIds = players.join(',')
+
+  let options = {
+    qs: {
+      personIds
+    },
+    json: true,
+    uri
+  }
+
+  return request(options)
+    .then(response => {
+      return playerParser.parsePlayerInfoAll(response.people)
     })
 }
 
