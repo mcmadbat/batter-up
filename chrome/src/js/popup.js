@@ -1,72 +1,94 @@
 // communication without background.js
-let port = chrome.extension.connect({
-  name: "Sample Communication"
+chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
+  if (req.source === 'background') {
+    $('#tbody').html('')
+    req.data.forEach(row => {
+      populateRow(row)
+    })
+  }
 })
 
-port.onMessage.addListener(function(msg){
-})
+window.onload = function() {
+  chrome.runtime.sendMessage({
+    source:'popup',
+    action:'poll'
+  })
+}
 
-let playerIds = [656846]
+let positionMap = [
+  'DH',
+  'P',
+  'C',
+  '1B',
+  '2B',
+  '3B',
+  'SS',
+  'LF',
+  'CF',
+  'RF'
+]
 
 // populating table
 // expecting data to be an array of well formed json objects
+
+function getOrder(data) {
+  if (!data.gameStatus) {
+    return 'Not Playing'
+  } else if (data.gameStatus === 'F') {
+    return 'Game Finished'
+  } else if (data.gameStatus !== 'L') {
+    return 'Game Not Started'
+  }
+
+  let order = data.order
+
+  if (order === -1) {
+    if (data.isPitching) {
+      order = 'Currently Pitching'
+    } else {
+      order = 'Not Playing'
+    }
+  } else if (order === 0) {
+    order = 'Batting'
+  } else if (order === 1) {
+    order = 'On Deck'
+  } else if (order === 2) {
+    order = 'In the hole'
+  } else {
+    order = `Due ${order + 1}th`
+  }
+
+  return order
+}
+
+function getMLBTVHtml(data) {
+  let mlbtv = data.mlbTVLink
+
+  if (data.gameStatus !== 'L') {
+    return ''
+  }
+
+  return `<a href=${mlbtv}>MLB.TV</a>`
+}
+
 function populateRow(rawData) {
-  console.log(rawData)
+  let order = getOrder(rawData.data)
+  let position = positionMap[rawData.data.position]
+
+  let link = getMLBTVHtml(rawData.data)
+  let html = convertToRow(rawData.id, rawData.data.img, rawData.data.name, order, position, link)
+  
+  $('#tbody').append(html)
 }
 
 // convert data into an html row
-function convertToRow(id, img, order, link) {
+function convertToRow(id, img, name, order, position, mlbtv) {
   return `
-    <tr>
-      <td scope="row"><img src=${img}></img>${name}</td>
+    <tr id=${id}>
+      <td scope="row"><img src=${img}></img><b>${name}</b> <i>${position}</i></td>
       <td>${order}</td>
-      <td><a href=${link}>MLB.TV</a></td>
+      <td>${mlbtv}</td>
     </tr>
   `
 }
-
-// testing
-
-const URL = `https://mcmadbat.me/batterup/`
-
-//initial 
-getData()
-
-// poll
-setInterval(getData, 30000)
-
-function getData() {
-  $.ajax({
-    url: URL,
-    type: 'get',
-    dataType: 'json',
-    success: onSuccess
-  })
-}
-
-function onSuccess(response) {
-  let games = response.data
-
-  // clear the table body
-  $('#tbody').html('')
-
-  // proccess the response and find the relevant information for the players
-  playerIds.forEach(id => {
-    let row = {
-      id,
-      data: {
-        isPlaying: false
-      }
-    }
-
-    let game = games.find(game => game.players.map(x => x.id).includes(id))
-
-    if (game) {
-      row.data.isPlaying = truex
-    }
-
-    populateRow(row)
-  })
-}
-
 
