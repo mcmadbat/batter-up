@@ -51,8 +51,8 @@ function onSuccess(response) {
   $('#tbody').html('')
 
   // proccess the response and find the relevant information for the players
-  let rows = playerIds.map(id => {
-    let playerRowData = {
+  playerIds.forEach(id => {
+    let row = {
       id,
       data: {
         isPlaying: false
@@ -61,7 +61,11 @@ function onSuccess(response) {
 
     let game = games.find(game => game.players.map(x => x.id).includes(id))
 
-    return playerRowData
+    if (game) {
+      row.data.isPlaying = truex
+    }
+
+    populateRow(row)
   })
 }
 
