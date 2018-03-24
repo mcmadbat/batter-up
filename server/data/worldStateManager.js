@@ -63,6 +63,10 @@ let work = () => {
       val.updated = new Date()
 
       debug(`work run # ${runNumber} finished successfully`)
+    }).catch(err => {
+      requestInProgress = false
+      console.error(err)
+      debug(`work run # ${runNumber} did not finish successfully`)
     })
   } else {
     debug(`previous request not finished`)
