@@ -9,6 +9,14 @@ let app = express()
 
 let index = require('./routes/index')
 
+// in ms
+const updateInterval = 5000
+
+// start world state manager
+// updates the game infos
+let worldStateManager = require('./data/worldStateManager')
+worldStateManager.init(updateInterval)
+
 app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -30,7 +38,8 @@ app.use(function (err, req, res, next) {
   res.locals.message = err.message
   res.locals.error = req.app.get('env') === 'development' ? err : {}
 
-  // render the error page
+  console.error(err)
+
   res.status(err.status || 500)
 
   if (req.app.get('env') === 'development') {

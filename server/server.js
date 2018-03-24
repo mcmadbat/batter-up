@@ -1,6 +1,6 @@
 'use strict'
 
-let debug = require('debug')('in-the-hole:server')
+let debug = require('debug')('batter-up:server')
 let app = require('./app')
 let http = require('http')
 
