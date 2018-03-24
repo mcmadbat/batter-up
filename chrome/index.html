@@ -1,19 +1,81 @@
 <!doctype html>
 <head>
-	<style type="text/css">
-		#mainPopup {
-			padding: 10px;
-			height: 200px;
-			width: 400px;
-			font-family: Helvetica, Ubuntu, Arial, sans-serif;
-		}
-		h1 {
-			font-size: 2em;
-		}
-	</style>
-
-	<script src="js/popup.js"></script>
+	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<title>jQuery UI Autocomplete - Custom data and display</title>
+  	<link href = "https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css"
+         rel = "stylesheet">
+  	<style>
+  	#player-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 1em;
+  	}
+  	#player-icon {
+    float: left;
+    height: 64px;
+    width: 64px;
+  	}
+  	#player-description {
+    margin: 0;
+    padding: 0;
+  	}
+  	</style>
+  	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
-<div id='popup'>
-	<h1>Hello World!!!</h1>
+
+<script>
+  $( function() {
+    var players = [
+      {
+        playerId: "ajudge",
+        label: "Aaron Judge",
+        desc: "A batter in NYC",
+        icon: "aaron.png"
+      },
+      {
+        playerId: "apudge",
+        label: "Aaron Pudge",
+        desc: "A wasteyute",
+        icon: "david.png"
+      }
+    ];
+ 
+    $( "#player" ).autocomplete({
+      minLength: 0,
+      source: players,
+      focus: function( event, ui ) {
+        $( "#player" ).val( ui.item.label );
+        return false;
+      },
+      select: function( event, ui ) {
+        $( "#player" ).val( ui.item.label );
+        $( "#player-id" ).val( ui.item.playerId );
+        $( "#player-description" ).html( ui.item.desc );
+        $( "#player-icon" ).attr( "src", "icons/" + ui.item.icon );
+ 
+        return false;
+      }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+      return $( "<li>" )
+        .append( "<div>" + item.label + "<br>" + item.desc + "</div>" )
+        .appendTo( ul );
+    };
+  } );
+  </script>
+</head>
+<body>
+<div class = "ui-widget">
+  <div id="player-label">Select a player:</div>
+  <img id="player-icon" src="icons/baseball.png" class="ui-state-default">
+  <input id="player">
+  <input type="hidden" id="player-id">
+  <button id = "add-button">Add</button>
+  <p id="player-description"></p>
 </div>
+ 
+ 
+</body>
+</html>
