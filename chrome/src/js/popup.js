@@ -51,7 +51,7 @@ function onSuccess(response) {
   $('#tbody').html('')
 
   // proccess the response and find the relevant information for the players
-  playerIds.forEach(id => {
+  let rows = playerIds.map(id => {
     let playerRowData = {
       id,
       data: {
@@ -59,19 +59,9 @@ function onSuccess(response) {
       }
     }
 
-    games
-      .filter(game => game.gameStatus.abstractGameState === 'Live')
-      .forEach(game => {
-      // check home
-      let home = game.homeTeam
-      let away = game.awayTeam
-      
-      if ([...home.battingOrder, ...home.bullpen, ...home.bench].includes(id)) {
-        
-      } else if ([...away.battingOrder, ...away.bullpen, ...away.bench].includes(id)) {
-         
-      } 
-    })
+    let game = games.find(game => game.players.map(x => x.id).includes(id))
+
+    return playerRowData
   })
 }
 
