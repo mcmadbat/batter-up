@@ -10,7 +10,7 @@ let app = express()
 let index = require('./routes/index')
 
 // in ms
-const updateInterval = 5000
+const updateInterval = 8000
 
 // start world state manager
 // updates the game infos
@@ -21,6 +21,12 @@ app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*")
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+  next()
+})
 
 // routes
 app.use('/', index)
