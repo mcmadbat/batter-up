@@ -8,7 +8,6 @@ const defaultGameStatus = {
   "isOnBench": false,
   "isSubstitute": false
 }
-
 parser.parse = player => {
   let person = player.person
 
@@ -18,7 +17,7 @@ parser.parse = player => {
   if (player.position) {
     positionCode = player.position.code
   }
-
+  
   return {
     id: person.id,
     name: person.fullName,
