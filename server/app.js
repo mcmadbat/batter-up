@@ -10,7 +10,7 @@ let app = express()
 let index = require('./routes/index')
 
 // in ms
-const updateInterval = 5000
+const updateInterval = 8000
 
 // start world state manager
 // updates the game infos
