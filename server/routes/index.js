@@ -3,8 +3,12 @@
 let express = require('express')
 let router = express.Router()
 
+let worldStateManager = require('../data/worldStateManager')
+
 router.get('/', function (req, res, next) {
-  return res.status(200).send('hello world!')
+  let val = worldStateManager.getState()
+
+  return res.status(200).send(val)
 })
 
 // health check

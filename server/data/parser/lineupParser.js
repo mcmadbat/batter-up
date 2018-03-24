@@ -31,21 +31,43 @@ parser.parse = (game, response) => {
   // game.awayTeam.players = awayPlayers
   // game.homeTeam.players = homePlayers
 
-  let currentBatter
-  let currentPitcher
+  // return information regarding the team of the current players
+  // this way we can later process the order even though
+  let currentHomeBatter = null
+  let currentAwayBatter = null
 
-  // find the current Batter and current Pitcher
-  [...awayPlayers, ...homePlayers].forEach(player => {
+  let currentHomePitcher = null
+  let currentAwayPitcher = null
+
+  // need to process home and away separately
+  awayPlayers.forEach(player => {
     if (player.gameStatus.isCurrentBatter) {
-      currentBatter = player.id
+      currentAwayBatter = player.id
     }
+
     if (player.gameStatus.isCurrentPitcher) {
-      currentPitcher = player.id
+      currentAwayPitcher = player.id
     }
   })
 
-  game.currentBatter = currentBatter
-  game.currentPitcher = currentPitcher
+  homePlayers.forEach(player => {
+    if (player.gameStatus.isCurrentBatter) {
+      currentHomeBatter = player.id
+    }
+
+    if (player.gameStatus.isCurrentPitcher) {
+      currentHomePitcher = player.id
+    }
+  })
+
+  game.currentHomeBatter = currentHomeBatter
+  game.currentAwayBatter = currentAwayBatter
+
+  game.currentAwayPitcher = currentAwayPitcher
+  game.currentHomePitcher = currentHomePitcher
+
+  // set the current team at bat to help facilitate parsing later
+  game.currentTeamAtBat = currentHomeBatter === null ? 'away' : 'home'
 
   return game
 }
