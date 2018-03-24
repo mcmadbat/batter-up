@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "export DEBUG=batter-up:server && node server.js",
+    "start": "node server.js",
     "lint": "standard --fix ",
     "test": "mocha --recursive"
   },

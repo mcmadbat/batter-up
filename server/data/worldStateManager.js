@@ -1,16 +1,35 @@
 'use strict'
 
+const debug = require('debug')('batter-up:worldStateManager')
+
+let mlbclient = require('./mlbClient')
+let worldState = require('./worldState')
+
 let manager = {}
 
-let val = 1
+// return payload
+let val = {
+  data: {},
+  updated: new Date()
+}
 
-let intervalObj 
+let intervalObj
+
+// flags for concurrency
+let requestInProgress = false
+
+// run #
+let runNumber = 0
 
 manager.init = interval => {
   // continuously do work
   if (!intervalObj) {
-    console.log('init')
-    intervalObj = setInterval (work, interval)
+    debug(`init called with interval ${interval} ms`)
+
+    // start off by doing work
+    work()
+
+    intervalObj = setInterval(work, interval)
   }
 }
 
@@ -22,7 +41,7 @@ manager.stop = () => {
 
 manager.getState = () => {
   if (!intervalObj) {
-    console.log('trying to access value before init')
+    debug('trying to access value before init()')
   }
 
   return val
@@ -30,7 +49,24 @@ manager.getState = () => {
 
 // increment for now
 let work = () => {
-  val++
+  if (!requestInProgress) {
+    runNumber++
+
+    debug(`work run # ${runNumber} started`)
+    requestInProgress = true
+
+    mlbclient.getGames().then(data => {
+      // reset flag
+      requestInProgress = false
+      // update vlaue
+      val.data = worldState.update(data)
+      val.updated = new Date()
+
+      debug(`work run # ${runNumber} finished successfully`)
+    })
+  } else {
+    debug(`previous request not finished`)
+  }
 }
 
 module.exports = manager
