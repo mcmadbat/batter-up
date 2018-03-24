@@ -7,6 +7,11 @@ let parser = {}
 // game: in the game object to append the data to
 // response: the http reponse to parse
 parser.parse = (game, response) => {
+  // if there is no lineup data then just return the game
+  if (!isLineupDataPopulated(response)) {
+    return game
+  }
+
   let away = response.teams.away
   let home = response.teams.home
 
@@ -43,6 +48,11 @@ parser.parse = (game, response) => {
   game.currentPitcher = currentPitcher
 
   return game
+}
+
+let isLineupDataPopulated = response => {
+  // both lineups need to be populated
+  return response.teams.away.battingOrder.length !== 0 && response.teams.home.battingOrder.length !== 0
 }
 
 module.exports = parser
