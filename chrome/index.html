@@ -1,19 +1,43 @@
 <!doctype html>
 <head>
+	<meta charset = "utf-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<style type="text/css">
 		#mainPopup {
 			padding: 10px;
-			height: 200px;
-			width: 400px;
+			height: 400px;
+			width: 450px;
 			font-family: Helvetica, Ubuntu, Arial, sans-serif;
 		}
 		h1 {
 			font-size: 2em;
 		}
+		body {
+			min-width: 357px;
+			overflow-x: hidden;
+		}
+		img {
+			margin: 5px;
+			border: 2px solid black;
+			vertical-align: middle;
+			height: 75px;
+		}
+		
 	</style>
 
-	<script src="js/popup.js"></script>
+	<script src="src/js/jquery.js"></script>
+	<script src="src/js/popup.js"></script>
 </head>
-<div id='popup'>
-	<h1>Hello World!!!</h1>
+<div id='mainPopup'>
+	<table class="table" id = "table">
+		<thead>
+			<tr>
+				<th scope="col">Name</th>
+				<th scope="col">Order</th>
+				<th scope="col">MLB.TV</th>
+			</tr>
+		</thead>
+		<tbody id='tbody'>
+		</tbody>
+	</table>
 </div>
