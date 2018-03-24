@@ -2,6 +2,12 @@
 
 let parser = {}
 
+const defaultGameStatus = {
+  "isCurrentBatter": false,
+  "isCurrentPitcher": false,
+  "isOnBench": false,
+  "isSubstitute": false
+}
 parser.parse = player => {
   let person = player.person
 
@@ -11,11 +17,13 @@ parser.parse = player => {
   if (player.position) {
     positionCode = player.position.code
   }
+  
   return {
     id: person.id,
     name: person.fullName,
     position: positionCode,
-    gameStatus: player.gameStatus
+    // sometimes game status is not populated for some reason
+    gameStatus: player.gameStatus === undefined ? defaultGameStatus : player.gameStatus
   }
 }
 

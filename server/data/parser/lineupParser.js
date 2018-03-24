@@ -27,9 +27,17 @@ parser.parse = (game, response) => {
   let awayPlayers = playerParser.parseAll(away.players)
   let homePlayers = playerParser.parseAll(home.players)
 
-  // for now don't include all the players
+  // // for now don't include all the players
   // game.awayTeam.players = awayPlayers
   // game.homeTeam.players = homePlayers
+
+  game.players = [...awayPlayers, ...homePlayers].map(player => {
+    return {
+      id: player.id,
+      name: player.name,
+      position: player.position
+    }
+  })
 
   // return information regarding the team of the current players
   // this way we can later process the order even though
