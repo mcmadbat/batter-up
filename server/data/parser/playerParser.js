@@ -2,6 +2,12 @@
 
 let parser = {}
 
+const defaultGameStatus = {
+  'isCurrentBatter': false,
+  'isCurrentPitcher': false,
+  'isOnBench': false,
+  'isSubstitute': false
+}
 parser.parse = player => {
   let person = player.person
 
@@ -11,11 +17,13 @@ parser.parse = player => {
   if (player.position) {
     positionCode = player.position.code
   }
+
   return {
     id: person.id,
     name: person.fullName,
     position: positionCode,
-    gameStatus: player.gameStatus
+    // sometimes game status is not populated for some reason
+    gameStatus: player.gameStatus === undefined ? defaultGameStatus : player.gameStatus
   }
 }
 
@@ -27,6 +35,19 @@ parser.parseAll = players => {
   })
 
   return parsedPlayers
+}
+
+parser.parsePlayerInfo = player => {
+  return {
+    id: player.id,
+    name: player.fullName,
+    number: player.primaryNumber,
+    position: player.primaryPosition.code
+  }
+}
+
+parser.parsePlayerInfoAll = players => {
+  return players.map(player => parser.parsePlayerInfo(player))
 }
 
 module.exports = parser
