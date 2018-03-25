@@ -117,6 +117,7 @@ function onSuccess(response) {
       let playerFromBackup = findPlayerById(id)
       row.data.name = playerFromBackup.name
       row.data.position = parseInt(playerFromBackup.position)
+      row.data.team = playerFromBackup.team
     }
 
     rows.push(row)
@@ -136,7 +137,6 @@ function sendMessageToPopup(data) {
 function pushIdsToStorage() {
   // load player IDs
   chrome.storage.sync.get([playerIdKey], function(result) {
-
     if (result.ids){
       playerIds = result.ids
     }
@@ -146,7 +146,6 @@ function pushIdsToStorage() {
 function getIdsFromStorage() {
   // load player IDs
   chrome.storage.sync.get([playerIdKey], function(result) {
-
     if (result.ids){
       playerIds = result.ids
     }

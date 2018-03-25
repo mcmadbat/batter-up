@@ -96,6 +96,11 @@ function populateRow(rawData) {
   Array.from(document.getElementsByClassName('mlbtv-link')).forEach(element => {
     element.addEventListener('click', openTab)
   })
+
+  // on error 
+  Array.from(document.getElementsByClassName('p-icon')).forEach(element => {
+    element.addEventListener('error', handleImgNotFound)
+  })
   
 }
 
@@ -103,7 +108,7 @@ function populateRow(rawData) {
 function convertToRow(id, img, name, order, position, mlbtv) {
   return `
     <tr id=${id}>
-      <td scope="row"><img src=${img}></img><b>${name}</b> <i>${position}</i></td>
+      <td scope="row"><img class='p-icon' id=img_${id} src=${img}></img><b>${name}</b> <i>${position}</i></td>
       <td>${order}</td>
       <td>${mlbtv}</td>
       <td><button id=btn_${id} name=${id} class='btn btn-danger remove-button'> remove</button></td>
@@ -112,12 +117,12 @@ function convertToRow(id, img, name, order, position, mlbtv) {
 }
 
 function handleIdInput() {
-  let id = $('#playerId').val()
+  let name = $('#nameInput').val()
+  let player = findPlayerByName(name)
 
-  // force int
-  id = parseInt(id)
-
-  sendMessageToBackGround('insert', id)
+  if (player.id && player.id !== 0) {
+    sendMessageToBackGround('insert', player.id)
+  } 
 }
 
 function openTab(args) {
@@ -150,5 +155,11 @@ function poll() {
     source:'popup',
     action:'poll'
   })
+}
+
+function handleImgNotFound(args) {
+  let id = args.target.id
+
+  $(`#${id}`).attr('src', `http://riyadhrugby.com/mainbase/here/wp-content/uploads/2016/11/01_img_hero_player_generic.png`)
 }
 
