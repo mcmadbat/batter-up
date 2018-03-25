@@ -1,13 +1,41 @@
+// poll
+let intervalObj = setInterval(getData, 10000)
+
 chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
   console.log(req)
   if (req.source === 'popup') {
     if (req.action === 'poll') {
       sendMessageToPopup(cachedData)
+    } else if (req.action === 'insert') {
+      let id = req.data
+      playerIds.push(id)
+      pushIdsToStorage()
+      clearInterval(intervalObj)
+      getData()
+      intervalObj = setInterval(getData, 10000)
+    } else if (req.action === 'delete') {
+      let id = req.data
+
+      // remove from list
+      let ind = playerIds.indexOf(id)
+
+      if (id > -1) {
+        playerIds.splice(ind, 1)
+      }
+
+      pushIdsToStorage()
+      clearInterval(intervalObj)
+      getData()
+      intervalObj = setInterval(getData, 10000)
     }
   }
 })
 
-let playerIds = [472528, 660271, 571875, 518468, 657225, 592178]
+const playerIdKey = 'playerIds'
+
+let playerIds = []
+
+getIdsFromStorage()
 
 const mlbTVRootURL = `https://www.mlb.com/tv/g`
 const URL = `https://mcmadbat.me/batterup/`
@@ -18,9 +46,6 @@ let cachedData = []
 
 //initial 
 getData()
-
-// poll
-setInterval(getData, 10000)
 
 function getData() {
   $.ajax({
@@ -95,10 +120,31 @@ function onSuccess(response) {
 }
 
 function sendMessageToPopup(data) {
-  console.log('sending ')
-  console.log(data)
   chrome.runtime.sendMessage({
     source: 'background',
     data: data
+  })
+}
+
+// storage helpers
+function pushIdsToStorage() {
+  // load player IDs
+  chrome.storage.sync.get([playerIdKey], function(result) {
+    console.log(result)
+
+    if (result.ids){
+      playerIds = result.ids
+    }
+  })
+}
+// storage helpers
+function getIdsFromStorage() {
+  // load player IDs
+  chrome.storage.sync.get([playerIdKey], function(result) {
+    console.log(result)
+
+    if (result.ids){
+      playerIds = result.ids
+    }
   })
 }

@@ -18,6 +18,7 @@
     "default_popup": "index.html"
   },
   "permissions": [
-    "notifications"
+    "notifications",
+    "storage"
   ]
 }
