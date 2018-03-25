@@ -62,3 +62,9 @@ typings/
 
 # mac 
 .DS_STORE
+
+# temp
+*/tmp/
+
+# temp players json
+_players.json
