@@ -4,7 +4,6 @@ $gray-border: darken(#f8f8f8, 10%);
 $gray-light: rgba(0, 0, 0, .35);
 $faded-yellow: lighten(#f1c40f, 40%);
 
-// thx, @HugoGiraudel
 @mixin scrollbars($size, $foreground-color, $background-color: mix($foreground-color, white, 50%)) {
   ::-webkit-scrollbar {
       width:  $size;
@@ -19,7 +18,6 @@ $faded-yellow: lighten(#f1c40f, 40%);
       background: $background-color;
   }
 
-  // For Internet Explorer
   body {
     scrollbar-face-color: $foreground-color;
     scrollbar-track-color: $background-color;
