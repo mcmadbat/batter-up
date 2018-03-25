@@ -8,8 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
 chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
   if (req.source === 'background') {
     $('#tbody').html('')
-
-    console.log(req.data)
     
     req.data.forEach(row => {
       populateRow(row)
@@ -74,7 +72,8 @@ function getMLBTVHtml(data) {
     return ''
   }
 
-  return `<a href=${mlbtv}>MLB.TV</a>`
+  //return `<a href=${mlbtv}>MLB.TV</a>`
+  return `<button id=mlbtv_${name} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV</button>`
 }
 
 function populateRow(rawData) {
@@ -86,8 +85,18 @@ function populateRow(rawData) {
   
   $('#tbody').append(html)
 
-  // add listener
+  // add listener for remove buttons
   document.getElementById(`btn_${rawData.id}`).addEventListener('click', remove)
+
+  Array.from(document.getElementsByClassName('remove-button')).forEach(element => {
+    element.addEventListener('click', remove)
+  })
+
+  // mlbtv listener
+  Array.from(document.getElementsByClassName('mlbtv-link')).forEach(element => {
+    element.addEventListener('click', openTab)
+  })
+  
 }
 
 // convert data into an html row
@@ -97,7 +106,7 @@ function convertToRow(id, img, name, order, position, mlbtv) {
       <td scope="row"><img src=${img}></img><b>${name}</b> <i>${position}</i></td>
       <td>${order}</td>
       <td>${mlbtv}</td>
-      <td><button id=btn_${id} name=${id} class='btn'> remove</btn></td>
+      <td><button id=btn_${id} name=${id} class='btn btn-danger remove-button'> remove</button></td>
     </tr>
   `
 }
@@ -110,6 +119,12 @@ function handleIdInput() {
 
   sendMessageToBackGround('insert', id)
 }
+
+function openTab(args) {
+  let link = args.target.value 
+  chrome.tabs.create({url: link}) 
+}
+
 
 function remove (args) {
   let id = args.target.name
