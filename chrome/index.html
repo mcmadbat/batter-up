@@ -1,71 +1,51 @@
 <!doctype html>
 <head>
-	<meta charset="utf-8">
-  	<meta name="viewport" content="width=device-width, initial-scale=1">
-  	<title>jQuery UI Autocomplete - Custom data and display</title>
-  	<link href = "https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css"
-         rel = "stylesheet">
-  	<style>
-  	#player-label {
+	<meta charset = "utf-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel = "stylesheet" href = "https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css">
+	<style type="text/css">
+		#mainPopup {
+			padding: 10px;
+			height: 400px;
+			width: 450px;
+			font-family: Helvetica, Ubuntu, Arial, sans-serif;
+		}
+		h1 {
+			font-size: 2em;
+		}
+		body {
+			min-width: 357px;
+			overflow-x: hidden;
+		}
+		img {
+			margin: 5px;
+			border: 2px solid black;
+			vertical-align: middle;
+			height: 75px;
+		}
+
+    #player-label {
     display: block;
     font-weight: bold;
     margin-bottom: 1em;
-  	}
-  	#player-icon {
+    }
+    #player-icon {
     float: left;
     height: 64px;
     width: 64px;
-  	}
-  	#player-description {
+    }
+    #player-description {
     margin: 0;
     padding: 0;
-  	}
-  	</style>
-  	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    }
+		
+	</style>
+
+	<script src="src/js/jquery.js"></script>
+  <script src="src/js/jquery-ui.js"></script>
+	<script src="src/js/popup.js"></script>
 </head>
 
-<script>
-  $( function() {
-    var players = [
-      {
-        playerId: "ajudge",
-        label: "Aaron Judge",
-        desc: "A batter in NYC",
-        icon: "aaron.png"
-      },
-      {
-        playerId: "apudge",
-        label: "Aaron Pudge",
-        desc: "A wasteyute",
-        icon: "david.png"
-      }
-    ];
- 
-    $( "#player" ).autocomplete({
-      minLength: 0,
-      source: players,
-      focus: function( event, ui ) {
-        $( "#player" ).val( ui.item.label );
-        return false;
-      },
-      select: function( event, ui ) {
-        $( "#player" ).val( ui.item.label );
-        $( "#player-id" ).val( ui.item.playerId );
-        $( "#player-description" ).html( ui.item.desc );
-        $( "#player-icon" ).attr( "src", "icons/" + ui.item.icon );
- 
-        return false;
-      }
-    })
-    .autocomplete( "instance" )._renderItem = function( ul, item ) {
-      return $( "<li>" )
-        .append( "<div>" + item.label + "<br>" + item.desc + "</div>" )
-        .appendTo( ul );
-    };
-  } );
-  </script>
-</head>
 <body>
 <div class = "ui-widget">
   <div id="player-label">Select a player:</div>
@@ -75,7 +55,18 @@
   <button id = "add-button">Add</button>
   <p id="player-description"></p>
 </div>
- 
- 
+
+<div id='mainPopup'>
+	<table class="table" id = "table">
+		<thead>
+			<tr>
+				<th scope="col">Name</th>
+				<th scope="col">Order</th>
+				<th scope="col">MLB.TV</th>
+			</tr>
+		</thead>
+		<tbody id='tbody'>
+		</tbody>
+	</table>
+</div>
 </body>
-</html>
