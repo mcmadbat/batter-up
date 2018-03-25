@@ -1,6 +1,20 @@
 $( function() {
   let players = getPlayerData()
 
+  const positionMap = [
+    'n/a',
+    'P',
+    'C',
+    '1B',
+    '2B',
+    '3B',
+    'SS',
+    'LF',
+    'CF',
+    'RF',
+    'DH'
+  ]
+
   $( "#nameInput" ).autocomplete({
     minLength: 2,
     source: players,
@@ -9,12 +23,12 @@ $( function() {
       results: function() {}
     },
     focus: function( event, ui ) {
-      $( "#nameInput" ).val( ui.item.label )
+      $( "#nameInput" ).val( ui.item.name )
       return false
     },
     select: function( event, ui ) {
-      $( "#nameInput" ).val( ui.item.label )
-      $( "#playerId" ).val( ui.item.playerId )
+      $( "#nameInput" ).val( ui.item.name )
+      $( "#playerId" ).val( ui.item.id )
       // $( "#player-description" ).html( ui.item.desc )
       // $( "#player-icon" ).attr( "src", "icons/" + ui.item.icon )
 
@@ -23,7 +37,7 @@ $( function() {
   })
   .autocomplete( "instance" )._renderItem = function( ul, item ) {
     return $( "<li>" )
-      .append( "<div>" + item.label + "<br>" + item.desc + "</div>" )
+      .append(`<div>${item.label} <i>${positionMap[parseInt(item.position)]}</i></div>`)
       .appendTo( ul )
   }
 })

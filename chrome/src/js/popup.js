@@ -8,7 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
 chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
   if (req.source === 'background') {
     $('#tbody').html('')
+
     console.log(req.data)
+    
     req.data.forEach(row => {
       populateRow(row)
     })
@@ -106,8 +108,7 @@ function handleIdInput() {
   // force int
   id = parseInt(id)
 
-  console.log(id)
-  //sendMessageToBackGround('insert', id)
+  sendMessageToBackGround('insert', id)
 }
 
 function remove (args) {
