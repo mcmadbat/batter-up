@@ -13,3 +13,9 @@ describe('mlbClient', function() {
     expect(mlbClient.getGames()).to.eventually.be.fulfilled
   })
 })
+
+describe('scrape', function() {
+  it('scrape!', function() {
+    expect(mlbClient.getAllPlayers()).to.eventually.be.fulfilled
+  })
+})

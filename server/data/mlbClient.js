@@ -1,4 +1,5 @@
 'use strict'
+const debug = require('debug')('batter-up:mlbClient')
 
 // parsers
 let scheduleParser = require('./parser/scheduleParser')
@@ -7,6 +8,7 @@ let playerParser = require('./parser/playerParser')
 
 const apiRootURL = `http://statsapi.mlb.com/api/v1/`
 const sportId = 1
+const rosterLookupKey = `fullRoster`
 
 let request = require('request-promise')
 
@@ -79,6 +81,66 @@ client.getPlayerInfo = players => {
   return request(options)
     .then(response => {
       return playerParser.parsePlayerInfoAll(response.people)
+    })
+}
+
+// ad hoc scrapes the api for each player
+client.getAllPlayers = () => {
+  debug('retrieving all players')
+  return client.getAllTeams()
+    .then(teams => {
+      let promises = teams.map(team => client.getPlayersOnTeam(team.id))
+
+      return Promise.all(promises)
+    })
+    .then(data => {
+      let fullList = [].concat(...data)
+      debug(`retrieved ${fullList.length} players`)
+      return fullList
+    })
+}
+
+client.getAllTeams = () => {
+  let uri = `${apiRootURL}teams`
+
+  let options = {
+    qs: {
+      sportId
+    },
+    json: true,
+    uri
+  }
+
+  return request(options)
+    .then(response => {
+      // 103 = AL, 104 = NL
+      let teams = response.teams.filter(team => team.league.id === 103 || team.league.id === 104)
+      return teams.map(team => {
+        return {
+          id: team.id,
+          name: team.abbreviation
+        }
+      })
+    })
+}
+
+client.getPlayersOnTeam = (teamId) => {
+  let uri = `${apiRootURL}teams/${teamId}/roster/${rosterLookupKey}`
+
+  let options = {
+    uri,
+    json: true
+  }
+
+  return request(options)
+    .then(response => {
+      return response.roster.map(player => {
+        return {
+          id: player.person.id,
+          name: player.person.fullName,
+          position: player.position.code
+        }
+      })
     })
 }
 
