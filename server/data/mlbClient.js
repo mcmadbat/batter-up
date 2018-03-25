@@ -1,5 +1,7 @@
 'use strict'
 const debug = require('debug')('batter-up:mlbClient')
+let moment = require('moment')
+let request = require('request-promise')
 
 // parsers
 let scheduleParser = require('./parser/scheduleParser')
@@ -10,7 +12,13 @@ const apiRootURL = `http://statsapi.mlb.com/api/v1/`
 const sportId = 1
 const rosterLookupKey = `fullRoster`
 
-let request = require('request-promise')
+let basePlayers = require('./base/basePlayers').data
+
+// dirty cache ewww
+let allPlayers = {
+  updated: null,
+  data: basePlayers
+}
 
 let client = {}
 
@@ -86,18 +94,53 @@ client.getPlayerInfo = players => {
 
 // ad hoc scrapes the api for each player
 client.getAllPlayers = () => {
-  debug('retrieving all players')
-  return client.getAllTeams()
-    .then(teams => {
-      let promises = teams.map(team => client.getPlayersOnTeam(team.id))
+  let now = moment()
 
-      return Promise.all(promises)
-    })
-    .then(data => {
-      let fullList = [].concat(...data)
-      debug(`retrieved ${fullList.length} players`)
-      return fullList
-    })
+  if (allPlayers.updated === null || now.diff(allPlayers.updated, 'h') >= 12) {
+    debug('retrieving all players')
+    return client.getAllTeams()
+      .then(teams => {
+        let promises = teams.map(team => client.getPlayersOnTeam(team.id, team.name))
+  
+        return Promise.all(promises)
+      })
+      .then(data => {
+        let fullList = [].concat(...data)
+        let appendList = []
+
+        debug(`retrieved ${fullList.length} players`)
+
+        // make sure there are no duplicates
+        let temp = []
+
+        fullList.forEach(x => {
+          if (!temp.find(y => y.id === x.id)) {
+            temp.push(x)
+          }
+        })
+
+        fullList = temp
+
+        // update the old data
+        allPlayers.data.forEach(x => {
+          let found = fullList.find(p => p.id === x.id)
+
+          if (!found) {
+            appendList.push(x)
+          }
+        })
+
+        debug(`found ${appendList.length} new players`)
+
+        allPlayers.updated = moment()
+        allPlayers.data = [...fullList, ...appendList]
+        
+        return allPlayers.data
+      })
+  } else {
+    debug(`returning cached players (n= ${allPlayers.data.length})`)
+    return Promise.resolve(allPlayers.data)
+  }
 }
 
 client.getAllTeams = () => {
@@ -124,7 +167,7 @@ client.getAllTeams = () => {
     })
 }
 
-client.getPlayersOnTeam = (teamId) => {
+client.getPlayersOnTeam = (teamId, teamName) => {
   let uri = `${apiRootURL}teams/${teamId}/roster/${rosterLookupKey}`
 
   let options = {
@@ -138,10 +181,12 @@ client.getPlayersOnTeam = (teamId) => {
         return {
           id: player.person.id,
           name: player.person.fullName,
-          position: player.position.code
+          position: player.position.code,
+          team: teamName
         }
       })
     })
 }
 
 module.exports = client
+
