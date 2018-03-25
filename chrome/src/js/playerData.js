@@ -6,7 +6,7 @@ function getPlayerData() {
   })
 }
 
-function findPlayerByID(id) {
+function findPlayerById(id) {
   let obj = {
     name: "A Player",
     position: 0
