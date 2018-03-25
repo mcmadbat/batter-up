@@ -4,15 +4,8 @@ const debug = require('debug')('batter-up:index')
 let express = require('express')
 let router = express.Router()
 
-let moment = require('moment')
-
 let worldStateManager = require('../data/worldStateManager')
 let mlbClient = require('../data/mlbClient')
-
-// dirty cache ewww
-let allPlayers = {
-  updated: moment()
-}
 
 // gets the world state
 router.get('/', function (req, res, next) {
@@ -35,27 +28,20 @@ router.post('/playerInfo', function (req, res, next) {
     })
     .catch(err => {
       debug(err)
-      return res.status(500).send('An error has occured')
+      return res.status(500).send('an error has occured')
     })
 })
 
 // get all players
 router.get('/allPlayers', function (req, res, next) {
-  // if stale data
-  if (!allPlayers.data || moment().diff(allPlayers.updated, 'h') >= 12) {
-    debug('no all player data or all player data is stale')
-    mlbClient.getAllPlayers()
-      .then(players => {
-        allPlayers = {
-          data: players,
-          updated: moment()
-        }
-
-        return res.status(200).send(allPlayers)
-      })
-  } else {
-    return res.status(200).send(allPlayers)
-  }
+  mlbClient.getAllPlayers()
+    .then(players => {
+      return res.status(200).send({data: players})
+    })
+    .catch(err => {
+      debug(err)
+      return res.status(500).send('an error has occured')
+    })
 })
 
 // health check
