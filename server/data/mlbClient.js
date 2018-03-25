@@ -10,7 +10,7 @@ let playerParser = require('./parser/playerParser')
 
 const apiRootURL = `http://statsapi.mlb.com/api/v1/`
 const sportId = 1
-const rosterLookupKey = `fullRoster`
+const rosterLookupKey = `40Man`
 
 let basePlayers = require('./base/basePlayers').data
 
@@ -101,7 +101,7 @@ client.getAllPlayers = () => {
     return client.getAllTeams()
       .then(teams => {
         let promises = teams.map(team => client.getPlayersOnTeam(team.id, team.name))
-  
+
         return Promise.all(promises)
       })
       .then(data => {
@@ -130,11 +130,11 @@ client.getAllPlayers = () => {
           }
         })
 
-        debug(`found ${appendList.length} new players`)
+        debug(`appended ${appendList.length} new players`)
 
         allPlayers.updated = moment()
         allPlayers.data = [...fullList, ...appendList]
-        
+
         return allPlayers.data
       })
   } else {
@@ -189,4 +189,3 @@ client.getPlayersOnTeam = (teamId, teamName) => {
 }
 
 module.exports = client
-

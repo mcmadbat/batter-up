@@ -136,7 +136,6 @@ function sendMessageToPopup(data) {
 function pushIdsToStorage() {
   // load player IDs
   chrome.storage.sync.get([playerIdKey], function(result) {
-    console.log(result)
 
     if (result.ids){
       playerIds = result.ids
@@ -147,7 +146,6 @@ function pushIdsToStorage() {
 function getIdsFromStorage() {
   // load player IDs
   chrome.storage.sync.get([playerIdKey], function(result) {
-    console.log(result)
 
     if (result.ids){
       playerIds = result.ids
