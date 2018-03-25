@@ -111,7 +111,7 @@ $( function() {
       {
         playerId: "apudge",
         label: "Aaron Pudge",
-        desc: "A wasteyute",
+        desc: "A batter in Scarborough",
         icon: "david.png"
       }
     ];
