@@ -2,6 +2,7 @@
 <head>
 	<meta charset = "utf-8">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel = "stylesheet" href = "https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css">
 	<style type="text/css">
 		#mainPopup {
 			padding: 10px;
@@ -22,17 +23,41 @@
 			vertical-align: middle;
 			height: 75px;
 		}
+
+    #player-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 1em;
+    }
+    #player-icon {
+    height: 32px;
+    width: 32px;
+    }
+    #player-description {
+    margin: 0;
+    padding: 0;
+    }
 		
 	</style>
 
 	<script src="src/js/jquery.js"></script>
+  <script src="src/js/jquery-ui.js"></script>
 	<script src="src/js/popup.js"></script>
 </head>
+
+<body>
+
+
 <div id='mainPopup'>
-  <center>
-    Add Batters: <input type='text' id='nameInput' ></input>
-    <button id='addBtn' class='btn'>Add</button>
+  <div class = "ui-widget">
+  <center>Add a player:
+    <img id="player-icon" src="icons/baseball.png" class="ui-state-default">
+    <input type="text" id="player">
+    <input type="hidden" id="player-id">
+    <button id = "addBtn" class "btn">Add</button>
+    <p id="player-description"></p>
   </center>
+  </div>
       
 	<table class="table" id = "table">
 		<thead>
@@ -47,3 +72,4 @@
 		</tbody>
 	</table>
 </div>
+</body>

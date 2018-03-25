@@ -100,8 +100,51 @@ function convertToRow(id, img, name, order, position, mlbtv) {
   `
 }
 
+$( function() {
+    var players = [
+      {
+        playerId: "ajudge",
+        label: "Aaron Judge",
+        desc: "A batter in NYC",
+        icon: "aaron.png"
+      },
+      {
+        playerId: "apudge",
+        label: "Aaron Pudge",
+        desc: "A batter in Scarborough",
+        icon: "david.png"
+      }
+    ];
+ 
+    $( "#player" ).autocomplete({
+      minLength: 0,
+      source: players,
+      messages: {
+        noResults: '',
+        results: function() {}
+    },
+      focus: function( event, ui ) {
+        $( "#player" ).val( ui.item.label );
+        return false;
+      },
+      select: function( event, ui ) {
+        $( "#player" ).val( ui.item.label );
+        $( "#player-id" ).val( ui.item.playerId );
+        $( "#player-description" ).html( ui.item.desc );
+        $( "#player-icon" ).attr( "src", "icons/" + ui.item.icon );
+ 
+        return false;
+      }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+      return $( "<li>" )
+        .append( "<div>" + item.label + "<br>" + item.desc + "</div>" )
+        .appendTo( ul );
+    };
+  } );
+
 function handleIdInput() {
-  let id = $('#nameInput').val()
+  let id = $('#player').val()
 
   // force int
   id = parseInt(id)
@@ -134,4 +177,3 @@ function poll() {
     action:'poll'
   })
 }
-
