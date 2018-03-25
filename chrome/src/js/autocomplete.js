@@ -29,8 +29,6 @@ $( function() {
     select: function( event, ui ) {
       $( "#nameInput" ).val( ui.item.name )
       $( "#playerId" ).val( ui.item.id )
-      // $( "#player-description" ).html( ui.item.desc )
-      // $( "#player-icon" ).attr( "src", "icons/" + ui.item.icon )
 
       return false
     }
