@@ -101,12 +101,13 @@ function convertToRow(id, img, name, order, position, mlbtv) {
 }
 
 function handleIdInput() {
-  let id = $('#nameInput').val()
+  let id = $('#playerId').val()
 
   // force int
   id = parseInt(id)
 
-  sendMessageToBackGround('insert', id)
+  console.log(id)
+  //sendMessageToBackGround('insert', id)
 }
 
 function remove (args) {
@@ -116,10 +117,9 @@ function remove (args) {
   $(`#${id}`).html('')
 
   sendMessageToBackGround('delete', id)
-
-
 }
 
+// send a message to the background
 function sendMessageToBackGround(action, data) {
   chrome.runtime.sendMessage({
     source: 'popup',
@@ -128,6 +128,7 @@ function sendMessageToBackGround(action, data) {
   })
 }
 
+// polls the background.js to get an update
 function poll() {
   chrome.runtime.sendMessage({
     source:'popup',
