@@ -78,7 +78,7 @@ function getMLBTVHtml(data) {
 
 function populateRow(rawData) {
   let order = getOrder(rawData.data)
-  let position = positionMap[rawData.data.position]
+  let position = rawData.data.position ? positionMap[rawData.data.position] : ''
 
   let link = getMLBTVHtml(rawData.data)
   let html = convertToRow(rawData.id, rawData.data.img, rawData.data.name, order, position, link)

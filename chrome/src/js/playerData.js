@@ -17,6 +17,8 @@ function findPlayerById(id) {
   if (player) {
     obj.name = player.name
     obj.position = player.position
+  } else {
+    console.log('cant find ' + id)
   }
   
   return obj
