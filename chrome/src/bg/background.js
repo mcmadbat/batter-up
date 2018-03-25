@@ -8,6 +8,11 @@ chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
       sendMessageToPopup(cachedData)
     } else if (req.action === 'insert') {
       let id = req.data
+
+      if (playerIds.includes(id)) {
+        return
+      }
+
       playerIds.push(id)
       pushIdsToStorage()
       clearInterval(intervalObj)
@@ -109,8 +114,9 @@ function onSuccess(response) {
       }
     } else {
       // TODO: have to populate another way
-      row.data.name ='TODO'
-      row.data.position = 1
+      let playerFromBackup = findPlayerById(id)
+      row.data.name = playerFromBackup.name
+      row.data.position = parseInt(playerFromBackup.position)
     }
 
     rows.push(row)

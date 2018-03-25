@@ -1,12 +1,13 @@
 <!doctype html>
 <head>
-	<meta charset = "utf-8">
+  <meta charset = "utf-8">
+  <link rel = "stylesheet" href = "https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<style type="text/css">
 		#mainPopup {
 			padding: 10px;
 			height: 400px;
-			width: 450px;
+			width: 600px;
 			font-family: Helvetica, Ubuntu, Arial, sans-serif;
 		}
 		h1 {
@@ -22,17 +23,39 @@
 			vertical-align: middle;
 			height: 75px;
 		}
+
+    #player-label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 1em;
+    }
+    #player-icon {
+      height: 32px;
+      width: 32px;
+    }
+    #player-description {
+      margin: 0;
+      padding: 0;
+    }
+
 		
 	</style>
-
-	<script src="src/js/jquery.js"></script>
+  <script src="src/js/rawData.js"></script>
+  <script src="src/js/jquery.js"></script>
+  <script src="src/js/jquery-ui.js"></script>
+  <script src="src/js/playerData.js"></script>
+  <script src="src/js/autocomplete.js"></script>
 	<script src="src/js/popup.js"></script>
 </head>
 <div id='mainPopup'>
   <center>
-    Add Batters: <input type='text' id='nameInput' ></input>
-    <button id='addBtn' class='btn'>Add</button>
-  </center>
+    <div class = "ui-widget">
+      Select a player:
+      <input type='text' id='nameInput' />
+      <input type="hidden" id="playerId"/>
+      <button id='addBtn' class='btn btn-primary'>Add</button>
+    </div>
+</center>
       
 	<table class="table" id = "table">
 		<thead>
