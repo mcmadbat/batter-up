@@ -3,12 +3,11 @@
 let parser = {}
 
 const defaultGameStatus = {
-  "isCurrentBatter": false,
-  "isCurrentPitcher": false,
-  "isOnBench": false,
-  "isSubstitute": false
+  'isCurrentBatter': false,
+  'isCurrentPitcher': false,
+  'isOnBench': false,
+  'isSubstitute': false
 }
-
 parser.parse = player => {
   let person = player.person
 
@@ -36,6 +35,19 @@ parser.parseAll = players => {
   })
 
   return parsedPlayers
+}
+
+parser.parsePlayerInfo = player => {
+  return {
+    id: player.id,
+    name: player.fullName,
+    number: player.primaryNumber,
+    position: player.primaryPosition.code
+  }
+}
+
+parser.parsePlayerInfoAll = players => {
+  return players.map(player => parser.parsePlayerInfo(player))
 }
 
 module.exports = parser
