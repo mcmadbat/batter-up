@@ -1,5 +1,8 @@
+// in ms
+const pollingInterval = 10000
+
 // poll
-let intervalObj = setInterval(getData, 10000)
+let intervalObj = setInterval(getData, pollingInterval)
 
 chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
   console.log(req)
@@ -17,7 +20,7 @@ chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
       pushIdsToStorage()
       clearInterval(intervalObj)
       getData()
-      intervalObj = setInterval(getData, 10000)
+      intervalObj = setInterval(getData, pollingInterval)
     } else if (req.action === 'delete') {
       let id = req.data
 
@@ -31,7 +34,7 @@ chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
       pushIdsToStorage()
       clearInterval(intervalObj)
       getData()
-      intervalObj = setInterval(getData, 10000)
+      intervalObj = setInterval(getData, pollingInterval)
     }
   }
 })
@@ -77,7 +80,7 @@ function onSuccess(response) {
       id,
       data: {
         gameStatus: null,
-        order: -1,
+        order: 999,
         isPitching: false,
         isSideBatting: false,
         img: `${headshotURL}${id}.jpg`
@@ -85,6 +88,8 @@ function onSuccess(response) {
     }
 
     if (game) {
+      row.data.order = 99
+
       row.data.mlbTVLink = `${mlbTVRootURL}${game.gamePk}`
 
       row.data.gameStatus = game.gameStatus.abstractGameCode
@@ -97,6 +102,7 @@ function onSuccess(response) {
       // treat batters and pitchers differently
       if (1 == row.data.position) {
         row.data.isPitching = game.currentAwayPitcher === id || game.currentHomePitcher === id      
+        row.data.order = row.data.isPitching ? -1 : 99
       }
 
       let homeOrder = game.homeTeam.battingOrder
