@@ -1,0 +1,80 @@
+<!doctype html>
+<head>
+  <meta charset = "utf-8">
+  <link rel = "stylesheet" href = "https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/index.css">
+	<style type="text/css">
+		#mainPopup {
+			padding: 10px;
+			height: 480px;
+			width: 600px;
+			font-family: Helvetica, Ubuntu, Arial, sans-serif;
+		}
+		h1 {
+			font-size: 2em;
+		}
+		body {
+			min-width: 357px;
+			overflow-x: hidden;
+		}
+		img {
+			margin: 5px;
+			border: 2px solid black;
+			vertical-align: middle;
+			height: 75px;
+		}
+
+    #player-label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 1em;
+    }
+    #player-icon {
+      height: 32px;
+      width: 32px;
+    }
+    #player-description {
+      margin: 0;
+      padding: 0;
+    }
+
+    .table-div {
+      height: 450px;
+      overflow: auto;
+      padding: 5px;
+    }
+
+		
+	</style>
+  <script src="src/js/rawData.js"></script>
+  <script src="src/js/jquery.js"></script>
+  <script src="src/js/jquery-ui.js"></script>
+  <script src="src/js/playerData.js"></script>
+  <script src="src/js/autocomplete.js"></script>
+	<script src="src/js/popup.js"></script>
+</head>
+<div id='mainPopup'>
+  <center>
+    <div class = "ui-widget">
+      Select a player:
+      <input type='text' id='nameInput' />
+      <input type="hidden" id="playerId"/>
+      <button id='addBtn' class='btn btn-primary'>Add</button>
+    </div>
+  </center>
+  <div class = 'table-div'>
+    <table class="table table-responsive" id = "table">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Order</th>
+          <th scope="col">MLB.TV</th>
+          <th scope='col'>Actions</th>
+        </tr>
+      </thead>
+      <tbody id='tbody'>
+      </tbody>
+    </table>
+  </div>    
+</div>
