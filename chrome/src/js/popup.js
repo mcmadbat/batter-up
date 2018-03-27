@@ -8,10 +8,31 @@ document.addEventListener('DOMContentLoaded', function() {
 chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
   if (req.source === 'background') {
     $('#tbody').html('')
-    
-    req.data.forEach(row => {
-      populateRow(row)
-    })
+
+    req.data
+      .sort((a,b) => {
+        // complex sorting algorithm 
+        // basically try to "estimate" how long until a player is playing again
+        if (a.data.isPitching) {
+          return -1
+        }
+
+        if (b.data.isPitching) {
+          return 1
+        }
+
+        if (a.data.isSideBatting === b.data.isSideBatting) {
+          return a.data.order - b.data.order
+        }
+
+        let left = a.data.order + (a.data.isSideBatting ? -3 : 0)
+        let right = b.data.order + (b.data.isSideBatting ? -3 : 0)
+
+        return left-right
+      })
+      .forEach(row => {
+        populateRow(row)
+      })
   }
 })
 
@@ -36,6 +57,9 @@ const positionMap = [
 // populating table
 // expecting data to be an array of well formed json objects
 function getOrder(data) {
+  let orderTxt 
+  let bold = false
+
   if (!data.gameStatus) {
     return 'Not Playing'
   } else if (data.gameStatus === 'F') {
@@ -48,21 +72,31 @@ function getOrder(data) {
 
   if (order === -1) {
     if (data.isPitching) {
-      order = 'Currently Pitching'
+      return !data.isSideBatting ? '<b>Pitching</b>' : 'Team at bat (Pitching)'
     } else {
-      order = 'Not Playing'
+      return 'Not Playing'
     }
   } else if (order === 0) {
-    order = 'Batting'
+    orderTxt = 'Batting'
+    bold = true
   } else if (order === 1) {
-    order = 'On Deck'
+    orderTxt = 'On Deck'
+    bold = true
   } else if (order === 2) {
-    order = 'In the hole'
+    orderTxt = 'In the hole'
+    bold = true
   } else {
-    order = `Due ${order + 1}th`
+    orderTxt = `Due ${order + 1}th`
   }
 
-  return order
+  // notify if side is not batting
+  if (!data.isSideBatting) {
+    orderTxt = `On defense (${orderTxt})`
+  } else if (bold) {
+    orderTxt = `<b>${orderTxt}</b>`
+  }
+
+  return orderTxt
 }
 
 function getMLBTVHtml(data) {
