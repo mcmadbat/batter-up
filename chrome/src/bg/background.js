@@ -4,8 +4,11 @@ const pollingInterval = 10000
 // poll
 let intervalObj = setInterval(getData, pollingInterval)
 
+// needed for notifications
+let currentBatting = [], previousCurrentBatting = []
+let currentPitching = [], previousCurrentPitching = []
+
 chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
-  console.log(req)
   if (req.source === 'popup') {
     if (req.action === 'poll') {
       sendMessageToPopup(cachedData)
@@ -125,6 +128,14 @@ function onSuccess(response) {
         row.data.order = -1
       }
 
+      if (row.data.isSideBatting && row.data.order == 0) {
+        currentBatting.push(row)
+      }
+
+      if (row.data.isPitching && !row.data.isSideBatting) {
+        currentPitching.push(row)
+      }
+
     } else {
       // TODO: have to populate another way
       let playerFromBackup = findPlayerById(id)
@@ -137,6 +148,7 @@ function onSuccess(response) {
   })
   cachedData = rows
   sendMessageToPopup(rows)
+  sendNotifications()
 }
 
 function sendMessageToPopup(data) {
@@ -163,4 +175,73 @@ function getIdsFromStorage() {
       playerIds = result.ids
     }
   })
+}
+
+function sendNotifications() {
+  let newBatters = []
+  let newPitchers = []
+
+  currentBatting.forEach(batter => {
+    if (!previousCurrentBatting.find(x => x.id == batter.id)) {
+      newBatters.push(batter)
+    }
+  })
+
+  currentPitching.forEach(pitcher => {
+    if (!previousCurrentPitching.find(x => x.id === pitcher.id)) {
+      newPitchers.push(pitcher)
+    }
+  })
+
+  if (newBatters.length != 0) {
+
+    let message = newBatters[0].data.name
+
+    if (currentBatting.length > 1) {
+      message += ` and ${currentBatting.length - 1} others are `
+    } else {
+      message += ' is '
+    }
+
+    message += 'up to bat!'
+
+    chrome.runtime.sendMessage({
+      source: 'notification',
+      data: {
+        type: "basic",
+        title: `Batter Up!`,
+        message: message,
+        iconUrl: "../../icons/icon128.png"
+      }
+    })
+  }
+
+  if (newPitchers.length != 0) {
+    let message = newPitchers[0].data.name
+
+    if (currentPitching.length > 1) {
+      message += ` and ${currentPitching.length - 1} others are `
+    } else {
+      message += ' is '
+    }
+
+    message += 'pitching!'
+
+    chrome.runtime.sendMessage({
+      source: 'notification',
+      data: {
+        type: "basic",
+        title: `Batter Up!`,
+        message: message,
+        iconUrl: "../../icons/icon128.png"
+      }
+    })
+  }
+
+  // reset
+  previousCurrentBatting = currentBatting
+  previousCurrentPitching = currentPitching
+
+  currentBatting = []
+  currentPitching = []
 }
