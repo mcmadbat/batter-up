@@ -7,7 +7,7 @@
 	<style type="text/css">
 		#mainPopup {
 			padding: 10px;
-			height: 400px;
+			height: 480px;
 			width: 600px;
 			font-family: Helvetica, Ubuntu, Arial, sans-serif;
 		}
@@ -39,6 +39,12 @@
       padding: 0;
     }
 
+    .table-div {
+      height: 450px;
+      overflow: auto;
+      padding: 5px;
+    }
+
 		
 	</style>
   <script src="src/js/rawData.js"></script>
@@ -56,18 +62,19 @@
       <input type="hidden" id="playerId"/>
       <button id='addBtn' class='btn btn-primary'>Add</button>
     </div>
-</center>
-      
-	<table class="table table-responsive" id = "table">
-		<thead>
-			<tr>
-				<th scope="col">Name</th>
-				<th scope="col">Order</th>
-        <th scope="col">MLB.TV</th>
-        <th scope='col'>Actions</th>
-			</tr>
-		</thead>
-		<tbody id='tbody'>
-		</tbody>
-	</table>
+  </center>
+  <div class = 'table-div'>
+    <table class="table table-responsive" id = "table">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Order</th>
+          <th scope="col">MLB.TV</th>
+          <th scope='col'>Actions</th>
+        </tr>
+      </thead>
+      <tbody id='tbody'>
+      </tbody>
+    </table>
+  </div>    
 </div>
