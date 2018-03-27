@@ -9,16 +9,24 @@ chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
   if (req.source === 'background') {
     $('#tbody').html('')
 
+    console.log(req.data)
+    // reset
+    badgeCount = 0
+
     req.data
       .sort((a,b) => {
         // complex sorting algorithm 
         // basically try to "estimate" how long until a player is playing again
         if (a.data.isPitching) {
           return -1
+        } else if (b.data.isPitching) {
+          return 1
         }
 
-        if (b.data.isPitching) {
+        if (a.data.gameStatus != 'L') {
           return 1
+        } else if (b.data.gameStatus != 'L') {
+          return -1
         }
 
         if (a.data.isSideBatting === b.data.isSideBatting) {
@@ -33,10 +41,14 @@ chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
       .forEach(row => {
         populateRow(row)
       })
+
+    // by now the badgecount should be set
+    chrome.browserAction.setBadgeText({text: badgeCount.toString()})
   }
 })
 
 window.onload = function() {
+  chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] })
   poll()
 }
 
@@ -53,6 +65,9 @@ const positionMap = [
   'RF',
   'DH'
 ]
+
+// how many are batting or pitching
+let badgeCount = 0
 
 // populating table
 // expecting data to be an array of well formed json objects
@@ -72,9 +87,9 @@ function getOrder(data) {
 
   if (order === -1) {
     if (data.isPitching) {
+      badgeCount += !data.isSideBatting ? 1 : 0
+
       return !data.isSideBatting ? '<b>Pitching</b>' : 'Team at bat (Pitching)'
-    } else {
-      return 'Not Playing'
     }
   } else if (order === 0) {
     orderTxt = 'Batting'
@@ -83,17 +98,20 @@ function getOrder(data) {
     orderTxt = 'On Deck'
     bold = true
   } else if (order === 2) {
-    orderTxt = 'In the hole'
+    orderTxt = 'In the Hole'
     bold = true
-  } else {
+  } else if (order <= 9) {
     orderTxt = `Due ${order + 1}th`
+  } else {
+    return 'Not Playing'
   }
 
   // notify if side is not batting
   if (!data.isSideBatting) {
-    orderTxt = `On defense (${orderTxt})`
+    orderTxt = `On Defense (${orderTxt})`
   } else if (bold) {
     orderTxt = `<b>${orderTxt}</b>`
+    badgeCount++
   }
 
   return orderTxt
