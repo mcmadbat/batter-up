@@ -96,7 +96,7 @@ function onSuccess(response) {
 
       // treat batters and pitchers differently
       if (1 == row.data.position) {
-        row.data.isPitching = game.currentAwayPitcher === id || game.currentHomePitcher === id
+        row.data.isPitching = game.currentAwayPitcher === id || game.currentHomePitcher === id      
       }
 
       let homeOrder = game.homeTeam.battingOrder
@@ -110,8 +110,15 @@ function onSuccess(response) {
       } else if (awayOrder.includes(id)) {
         row.data.isSideBatting = game.currentTeamAtBat === 'away'
 
-        row.data.order =  (9 + awayOrder.indexOf(id) - awayOrder.indexOf(game.currentHomeBatter)) % 9
+        row.data.order =  (9 + awayOrder.indexOf(id) - awayOrder.indexOf(game.currentAwayBatter)) % 9
       }
+
+      // if a pitcher is pitching (on the field) 
+      // AND in lineup, then show that they are pitching
+      if (row.data.isPitching && -1 !== row.data.order && !row.data.isSideBatting) {
+        row.data.order = -1
+      }
+
     } else {
       // TODO: have to populate another way
       let playerFromBackup = findPlayerById(id)
