@@ -9,7 +9,6 @@ chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
   if (req.source === 'background') {
     $('#tbody').html('')
 
-    console.log(req.data)
     // reset
     badgeCount = 0
 
