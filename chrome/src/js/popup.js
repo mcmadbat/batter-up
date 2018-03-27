@@ -1,8 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
-  let link = document.getElementById('addBtn');
+  let link = document.getElementById('addBtn')
   // onClick's logic below:
-  link.addEventListener('click', handleIdInput);
+  link.addEventListener('click', handleIdInput)
+
+  document.getElementById('notifBtn').addEventListener('click', handleNotifBtnClick)
 })
+
+let toggleNotification = true
 
 // communication without background.js
 chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
@@ -43,6 +47,10 @@ chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
 
     // by now the badgecount should be set
     chrome.browserAction.setBadgeText({text: badgeCount.toString()})
+  } else if (req.source === 'notification') {
+    if (toggleNotification) {
+      chrome.notifications.create('', req.data, null)
+    }
   }
 })
 
@@ -70,7 +78,7 @@ let badgeCount = 0
 
 // populating table
 // expecting data to be an array of well formed json objects
-function getOrder(data) {
+function getOrder(id, data) {
   let orderTxt 
   let bold = false
 
@@ -86,9 +94,12 @@ function getOrder(data) {
 
   if (order === -1) {
     if (data.isPitching) {
-      badgeCount += !data.isSideBatting ? 1 : 0
-
-      return !data.isSideBatting ? '<b>Pitching</b>' : 'Team at bat (Pitching)'
+      if (!data.isSideBatting) {
+        badgeCount++
+        return '<b>Pitching</b>'
+      } else {
+        return 'Team at bat (Pitching)'
+      }
     }
   } else if (order === 0) {
     orderTxt = 'Batting'
@@ -128,7 +139,7 @@ function getMLBTVHtml(data) {
 }
 
 function populateRow(rawData) {
-  let order = getOrder(rawData.data)
+  let order = getOrder(rawData.id, rawData.data)
   let position = rawData.data.position ? positionMap[rawData.data.position] : ''
 
   let link = getMLBTVHtml(rawData.data)
@@ -152,7 +163,6 @@ function populateRow(rawData) {
   Array.from(document.getElementsByClassName('p-icon')).forEach(element => {
     element.addEventListener('error', handleImgNotFound)
   })
-  
 }
 
 // convert data into an html row
@@ -212,5 +222,21 @@ function handleImgNotFound(args) {
   let id = args.target.id
 
   $(`#${id}`).attr('src', `http://riyadhrugby.com/mainbase/here/wp-content/uploads/2016/11/01_img_hero_player_generic.png`)
+}
+
+function handleNotifBtnClick(args) {
+  let newClass = `btn `
+  let text = 'Turn Off Notifications'
+
+  if (toggleNotification) {
+    newClass += ` btn-primary`
+    toggleNotification = false
+    text = 'Turn On Notifications'
+  } else {
+    newClass += ` btn-danger`
+    toggleNotification = true
+  }
+
+  $('#notifBtn').attr('class', newClass).html(text)
 }
 
