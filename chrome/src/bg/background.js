@@ -1,5 +1,10 @@
 // in ms
-const pollingInterval = 10000
+const pollingInterval = 10100
+
+// sleep longer if no games currently up
+const sleepPollingInterval = 1000 * 60
+
+let curInterval = pollingInterval
 
 // poll
 let intervalObj = setInterval(getData, pollingInterval)
@@ -81,6 +86,18 @@ function getData () {
 function onSuccess (response) {
   let games = response.data
   let rows = []
+
+  if (!games.find(x => x.gameStatus.abstractGameCode == 'L') && curInterval != sleepPollingInterval) {
+    clearInterval(intervalObj)
+    // set to longer term
+    intervalObj = setInterval(getData, sleepPollingInterval)
+    curInterval = sleepPollingInterval
+  } else if (curInterval != pollingInterval){
+    clearInterval(intervalObj)
+    // set to longer term
+    intervalObj = setInterval(getData, curInterval)
+    curInterval = pollingInterval
+  }
 
   // clear the table body
   $('#tbody').html('')
@@ -256,8 +273,9 @@ function sendNotifications () {
       title: `Batter Up!`,
       message: message,
       iconUrl: '../../icons/icon128.png'
-
     }
+
+
   }
 
   // reset
