@@ -2,38 +2,57 @@
 <head>
   <meta charset = "utf-8">
   <link rel = "stylesheet" href = "https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/index.css">
-	<style type="text/css">
-		#mainPopup {
-			padding: 10px;
-			height: 500px;
-			width: 600px;
-			font-family: Helvetica, Ubuntu, Arial, sans-serif;
-		}
-		h1 {
-			font-size: 2em;
-		}
-		body {
-			min-width: 357px;
-			overflow-x: hidden;
-		}
-		img {
-			margin: 5px;
-			border: 2px solid black;
-			vertical-align: middle;
-			height: 75px;
-		}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet">
+  <!-- <link rel="stylesheet" href="css/index.css"> -->
+  <style type="text/css">
+
+    #mainPopup {
+      padding-top: 10px;
+      height: 500px;
+      width: 600px;
+      font-family: "Lato", Helvetica, Ubuntu, Arial, sans-serif;
+    }
+    h1 {
+      font-size: 2em;
+    }
+    body {
+      min-width: 357px;
+      overflow-x: hidden;
+    }
+
+    img {
+      vertical-align: middle;
+      height: 70px;
+      display: block;
+      margin: 0 auto;
+      width: auto;
+    }
+
+    .image-cropper {
+      margin: 0 4px;
+      height: 65px;
+      width: 65px;
+      border-radius: 100%;
+      position: relative;
+      overflow: hidden;
+      background-color: #BDC6CD;
+    }
+
 
     #player-label {
       display: block;
       font-weight: bold;
       margin-bottom: 1em;
     }
+
     #player-icon {
       height: 32px;
       width: 32px;
     }
+
     #player-description {
       margin: 0;
       padding: 0;
@@ -44,43 +63,86 @@
       overflow: auto;
       padding: 5px;
     }
-    
+
     #notifBtn {
       margin: 5px;
     }
-		
-	</style>
+
+    #table tr {
+      border: 10px solid white;
+      background: #F8F8F8;
+    }
+
+    #table tr td {
+      vertical-align: middle;
+    }
+
+    .remove-button {
+      text-transform: capitalize;
+      background: transparent;
+    }
+
+    .remove-button:focus {
+      outline: 0;
+    }
+
+    #nameInput {
+      padding: 4px;
+      padding-left: 6px;
+      width: 60%;
+      border: 1px solid lightgray;
+      border-radius: 2px;
+    }
+
+    #nameInput:focus {
+      outline: 0;
+    }
+
+    #nameInput::placeholder {
+      color: lightgray;
+      font-size: 14px;
+      font-weight: normal;
+    }
+
+    #addBtn {
+      border: none;
+      text-transform: uppercase;
+    }
+
+    i.mlbtv-link-icon.material-icons {
+      font-size: 14px;
+    }
+
+    .mlbtv-link:hover {
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+
+  </style>
   <script src="src/js/rawData.js"></script>
   <script src="src/js/jquery.js"></script>
   <script src="src/js/jquery-ui.js"></script>
   <script src="src/js/playerData.js"></script>
   <script src="src/js/autocomplete.js"></script>
-	<script src="src/js/popup.js"></script>
+  <script src="src/js/popup.js"></script>
 </head>
 <div id='mainPopup'>
-  <center>
+<center>
     <div class = "ui-widget">
-      Select a player:
-      <input type='text' id='nameInput' />
+        <input type='text' id='nameInput' placeholder="Search and Add a Player" />
       <input type="hidden" id="playerId"/>
       <button id='addBtn' class='btn btn-primary'>Add</button>
     </div>
   </center>
   <div class = 'table-div'>
     <table class="table table-responsive" id = "table">
-      <thead>
-        <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Order</th>
-          <th scope="col">MLB.TV</th>
-          <th scope='col'>Actions</th>
-        </tr>
-      </thead>
+
       <tbody id='tbody'>
       </tbody>
     </table>
   </div>
   <center>
     <button id='notifBtn' class='btn btn-danger'>Turn Off Notifications</button>
-  </center>   
+  </center>
 </div>

@@ -123,8 +123,7 @@ function getMLBTVHtml (data) {
     return ''
   }
 
-  // return `<a href=${mlbtv}>MLB.TV</a>`
-  return `<button id=mlbtv_${name} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV</button>`
+  return `<button id=mlbtv_${name} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV <i class="mlbtv-link-icon material-icons">launch</i></button>`
 }
 
 function populateRow (rawData) {
@@ -159,10 +158,11 @@ function populateRow (rawData) {
 function convertToRow (id, img, name, order, position, mlbtv) {
   return `
     <tr id=${id}>
-      <td scope="row"><img class='p-icon' id=img_${id} src=${img}></img><b>${name}</b> <i>${position}</i></td>
+      <td scope="row"><div class="image-cropper"><img class='p-icon' id=img_${id} src=${img}></img></div></td>
+      <td><b>${name}</b>, <i>${position}</i></td>
       <td>${order}</td>
       <td>${mlbtv}</td>
-      <td><button id=btn_${id} name=${id} class='btn btn-danger remove-button'>Remove</button></td>
+      <td><button id=btn_${id} name=${id} class='btn remove-button'>X</button></td>
     </tr>
   `
 }
