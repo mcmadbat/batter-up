@@ -29,6 +29,7 @@ state.update = data => {
           let oldGame = oldState.find(oldGame => oldGame.gamePk === game.gamePk)
           if (oldGame) {
             updateCurrentBatterInfo(game, oldGame)
+            updateCurrentPitcherInfo(game, oldGame)
           }
         })
     }
@@ -56,6 +57,17 @@ let updateCurrentBatterInfo = (newGame, oldGame) => {
     newGame.currentHomeBatter = newGame.homeTeam.battingOrder[0]
   } else if (!newGame.currentAwayBatter) {
     newGame.currentAwayBatter = newGame.awayTeam.battingOrder[0]
+  }
+}
+
+let updateCurrentPitcherInfo = (newGame, oldGame) => {
+  // fill in the old info if any needed
+  if (!newGame.currentHomePitcher) {
+    newGame.currentHomePitcher = oldGame.currentHomePitcher
+  }
+
+  if (!newGame.currentAwayPitcher) {
+    newGame.currentAwayPitcher = oldGame.currentAwayPitcher
   }
 }
 
