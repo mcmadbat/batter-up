@@ -28,10 +28,7 @@ chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
       clearInterval(intervalObj)
 
       let id = req.data
-
-      // remove from list
-      console.log(playerIds.filter(x => x != id))
-
+      
       playerIds = playerIds.filter(x => x != id)
 
       pushIdsToStorage()
