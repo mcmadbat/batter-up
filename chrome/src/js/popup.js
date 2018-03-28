@@ -113,7 +113,7 @@ function getOrder(id, data) {
   } else if (order <= 9) {
     orderTxt = `Due ${order + 1}th`
   } else {
-    return 'Not Playing'
+    return data.position == 1 ? 'Not Pitching' : 'Not Playing'
   }
 
   // notify if side is not batting
