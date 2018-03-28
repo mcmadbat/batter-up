@@ -231,7 +231,7 @@ function sendNotifications () {
       title: `Batter Up!`,
       message: message,
       iconUrl: '../../icons/icon128.png'
-      
+
     }
   }
 
@@ -251,7 +251,7 @@ function sendNotifications () {
       title: `Batter Up!`,
       message: message,
       iconUrl: '../../icons/icon128.png'
-      
+
     }
   }
 
@@ -268,10 +268,9 @@ function sendNotifications () {
 
   // by now the badgecount should be set
   chrome.browserAction.setBadgeText({text: badgeCount.toString()})
- 
 }
 
-function getNotifSetting() {
+function getNotifSetting () {
   chrome.storage.sync.get(['notif'], function (result) {
     if (result[0]) {
       showNotification = result[0]['notif']
@@ -279,8 +278,8 @@ function getNotifSetting() {
   })
 }
 
-function saveNotifSettings() {
-  chrome.storage.sync.set( {
-    "notif": showNotification
-  }, function(){})
+function saveNotifSettings () {
+  chrome.storage.sync.set({
+    'notif': showNotification
+  }, function () {})
 }
