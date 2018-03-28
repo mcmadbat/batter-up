@@ -8,13 +8,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 let toggleNotification = true
 
+sendMessageToBackGround('getNotif', null)
+
 // communication without background.js
 chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
   if (req.source === 'background') {
     $('#tbody').html('')
-
-    // reset
-    badgeCount = 0
 
     req.data
       .sort((a, b) => {
@@ -45,17 +44,12 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
         populateRow(row)
       })
 
-    // by now the badgecount should be set
-    chrome.browserAction.setBadgeText({text: badgeCount.toString()})
   } else if (req.source === 'notification') {
-    if (toggleNotification) {
-      chrome.notifications.create('', req.data, null)
-    }
+    toggleNotification = req.data
   }
 })
 
 window.onload = function () {
-  chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] })
   poll()
 }
 
@@ -72,9 +66,6 @@ const positionMap = [
   'RF',
   'DH'
 ]
-
-// how many are batting or pitching
-let badgeCount = 0
 
 // populating table
 // expecting data to be an array of well formed json objects
@@ -95,7 +86,6 @@ function getOrder (id, data) {
   if (order === -1) {
     if (data.isPitching) {
       if (!data.isSideBatting) {
-        badgeCount++
         return '<b>Pitching</b>'
       } else {
         return 'Team At Bat (Pitching)'
@@ -103,7 +93,6 @@ function getOrder (id, data) {
     }
   } else if (order === 0) {
     orderTxt = 'Batting'
-    badgeCount++
     bold = true
   } else if (order === 1) {
     orderTxt = 'On Deck'
@@ -227,16 +216,20 @@ function handleImgNotFound (args) {
 }
 
 function handleNotifBtnClick (args) {
+  toggleNotification = !toggleNotification
+  changeNotifButton(toggleNotification)
+  sendMessageToBackGround('toggleNotif', toggleNotification)
+}
+
+function changeNotifButton (toggle) {
   let newClass = `btn `
   let text = 'Turn Off Notifications'
 
-  if (toggleNotification) {
+  if (toggle) {
     newClass += ` btn-primary`
-    toggleNotification = false
     text = 'Turn On Notifications'
   } else {
     newClass += ` btn-danger`
-    toggleNotification = true
   }
 
   $('#notifBtn').attr('class', newClass).html(text)
