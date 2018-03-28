@@ -20,9 +20,9 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
       .sort((a, b) => {
         // complex sorting algorithm
         // basically try to "estimate" how long until a player is playing again
-        if (a.data.isPitching) {
+        if (a.data.isPitching && !a.data.isSideBatting) {
           return -1
-        } else if (b.data.isPitching) {
+        } else if (b.data.isPitching && !b.data.isSideBatting) {
           return 1
         }
 
@@ -98,7 +98,7 @@ function getOrder (id, data) {
         badgeCount++
         return '<b>Pitching</b>'
       } else {
-        return 'Team at bat (Pitching)'
+        return 'Team At Bat (Pitching)'
       }
     }
   } else if (order === 0) {
@@ -173,7 +173,7 @@ function convertToRow (id, img, name, order, position, mlbtv) {
       <td scope="row"><img class='p-icon' id=img_${id} src=${img}></img><b>${name}</b> <i>${position}</i></td>
       <td>${order}</td>
       <td>${mlbtv}</td>
-      <td><button id=btn_${id} name=${id} class='btn btn-danger remove-button'> remove</button></td>
+      <td><button id=btn_${id} name=${id} class='btn btn-danger remove-button'>Remove</button></td>
     </tr>
   `
 }
