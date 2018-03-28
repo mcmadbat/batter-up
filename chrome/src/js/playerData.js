@@ -47,3 +47,25 @@ function findPlayerByName(name) {
 
   return obj
 }
+
+// update player data
+let url = `https://mcmadbat.me/batterup/allplayers/`
+
+const oneDayInMs = 1000 * 60 * 60 * 24
+
+getUpdatedRawPlayerData()
+
+setInterval(function() {getUpdatedRawPlayerData()}, oneDayInMs)
+
+function getUpdatedRawPlayerData() {
+  $.ajax({
+    url: url,
+    type: 'get',
+    dataType: 'json',
+    success: updateRawPlayerData
+  })
+}
+
+function updateRawPlayerData(response) {
+  _rawData = response
+}
