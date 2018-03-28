@@ -1,14 +1,14 @@
 // this massive file contains all the player data
-function getPlayerData() {
+function getPlayerData () {
   return _rawData.data.map(x => {
     x.label = x.name
     return x
   })
 }
 
-function findPlayerById(id) {
+function findPlayerById (id) {
   let obj = {
-    name: "A Player",
+    name: 'A Player',
     position: 0,
     team: 'N/A'
   }
@@ -22,19 +22,19 @@ function findPlayerById(id) {
   } else {
     console.log('cant find ' + id)
   }
-  
+
   return obj
 }
 
-function findPlayerByName(name) {
+function findPlayerByName (name) {
   let obj = {
-    name: "A Player",
+    name: 'A Player',
     position: 0,
     team: 'N/A',
     id: 0
   }
 
-  let player = _rawData.data.find(x => x.name == name) 
+  let player = _rawData.data.find(x => x.name == name)
 
   if (player) {
     obj.name = player.name
@@ -55,9 +55,9 @@ const oneDayInMs = 1000 * 60 * 60 * 24
 
 getUpdatedRawPlayerData()
 
-setInterval(function() {getUpdatedRawPlayerData()}, oneDayInMs)
+setInterval(function () { getUpdatedRawPlayerData() }, oneDayInMs)
 
-function getUpdatedRawPlayerData() {
+function getUpdatedRawPlayerData () {
   $.ajax({
     url: url,
     type: 'get',
@@ -66,6 +66,6 @@ function getUpdatedRawPlayerData() {
   })
 }
 
-function updateRawPlayerData(response) {
+function updateRawPlayerData (response) {
   _rawData = response
 }
