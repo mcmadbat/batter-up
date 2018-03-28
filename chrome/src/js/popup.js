@@ -64,7 +64,8 @@ const positionMap = [
   'LF',
   'CF',
   'RF',
-  'DH'
+  'DH',
+  'PH'
 ]
 
 // populating table
