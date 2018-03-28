@@ -135,6 +135,11 @@ function onSuccess(response) {
         currentPitching.push(row)
       }
 
+      if (game.gameStatus.abstractGameCode != 'L' ) { 
+        row.data.order = 999 
+        row.data.isPitching = false
+      }
+
     } else {
       // TODO: have to populate another way
       let playerFromBackup = findPlayerById(id)

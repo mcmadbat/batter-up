@@ -103,6 +103,7 @@ function getOrder(id, data) {
     }
   } else if (order === 0) {
     orderTxt = 'Batting'
+    badgeCount++
     bold = true
   } else if (order === 1) {
     orderTxt = 'On Deck'
@@ -121,7 +122,7 @@ function getOrder(id, data) {
     orderTxt = `On Defense (${orderTxt})`
   } else if (bold) {
     orderTxt = `<b>${orderTxt}</b>`
-    badgeCount++
+    
   }
 
   return orderTxt
@@ -184,7 +185,9 @@ function handleIdInput() {
 
   if (player.id && player.id !== 0) {
     sendMessageToBackGround('insert', player.id)
-  } 
+  }
+  
+  $('#nameInput').val('')
 }
 
 function openTab(args) {
