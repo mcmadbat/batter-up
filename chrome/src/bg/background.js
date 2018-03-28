@@ -25,17 +25,17 @@ chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
       getData()
       intervalObj = setInterval(getData, pollingInterval)
     } else if (req.action === 'delete') {
+      clearInterval(intervalObj)
+
       let id = req.data
 
       // remove from list
-      let ind = playerIds.indexOf(id)
+      console.log(playerIds.filter(x => x != id))
 
-      if (id > -1) {
-        playerIds.splice(ind, 1)
-      }
+      playerIds = playerIds.filter(x => x != id)
 
       pushIdsToStorage()
-      clearInterval(intervalObj)
+      
       getData()
       intervalObj = setInterval(getData, pollingInterval)
     }
@@ -75,7 +75,9 @@ function onSuccess(response) {
   $('#tbody').html('')
 
   // proccess the response and find the relevant information for the players
-  playerIds.forEach(id => {
+  playerIds
+    .filter(x => playerIds.includes(x))
+    .forEach(id => {
 
     let game = games.find(game => game.players && game.players.map(x => x.id).includes(id))
 

@@ -150,6 +150,7 @@ function populateRow(rawData) {
   // add listener for remove buttons
   document.getElementById(`btn_${rawData.id}`).addEventListener('click', remove)
 
+  // remove button
   Array.from(document.getElementsByClassName('remove-button')).forEach(element => {
     element.addEventListener('click', remove)
   })
