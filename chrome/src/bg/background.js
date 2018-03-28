@@ -8,6 +8,8 @@ let intervalObj = setInterval(getData, pollingInterval)
 let currentBatting = [], previousCurrentBatting = []
 let currentPitching = [], previousCurrentPitching = []
 
+let badgeCount = 0
+
 chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
   if (req.source === 'popup') {
     if (req.action === 'poll') {
@@ -35,14 +37,26 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
 
       getData()
       intervalObj = setInterval(getData, pollingInterval)
+    } else if (req.action === 'toggleNotif') {
+      showNotification = req.data
+      saveNotifSettings()
+    } else if (req.action === 'getNotif') {
+      chrome.runtime.sendMessage({
+        source: 'notification',
+        data: showNotification
+      })
     }
   }
 })
 
+let showNotification = true
 const playerIdKey = 'playerIds'
 
 let playerIds = []
 
+chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] })
+
+getNotifSetting()
 getIdsFromStorage()
 
 const mlbTVRootURL = `https://www.mlb.com/tv/g`
@@ -162,24 +176,30 @@ function sendMessageToPopup (data) {
 
 // storage helpers
 function pushIdsToStorage () {
-  // load player IDs
-  chrome.storage.sync.get([playerIdKey], function (result) {
-    if (result.ids) {
-      playerIds = result.ids
-    }
+  let data = {
+    playerIdKey: playerIds
+  }
+  // set player IDS
+  chrome.storage.sync.set(data, function () {
   })
 }
 // storage helpers
 function getIdsFromStorage () {
   // load player IDs
   chrome.storage.sync.get([playerIdKey], function (result) {
-    if (result.ids) {
-      playerIds = result.ids
+    if (result[0]) {
+      playerIds = result[0][playerIdKey].ids
     }
   })
 }
 
 function sendNotifications () {
+  if (!showNotification) {
+    return
+  }
+
+  let notifData = null
+
   let newBatters = []
   let newPitchers = []
 
@@ -195,7 +215,12 @@ function sendNotifications () {
     }
   })
 
-  if (newBatters.length != 0) {
+  badgeCount = currentBatting.length + currentPitching.length
+  
+  // by now the badgecount should be set
+  chrome.browserAction.setBadgeText({text: badgeCount.toString()})
+
+  if (newBatters.length !== 0) {
     let message = newBatters[0].data.name
 
     if (currentBatting.length > 1) {
@@ -206,18 +231,16 @@ function sendNotifications () {
 
     message += 'up to bat!'
 
-    chrome.runtime.sendMessage({
-      source: 'notification',
-      data: {
-        type: 'basic',
-        title: `Batter Up!`,
-        message: message,
-        iconUrl: '../../icons/icon128.png'
-      }
-    })
+    notifData = {
+      type: 'basic',
+      title: `Batter Up!`,
+      message: message,
+      iconUrl: '../../icons/icon128.png'
+
+    }
   }
 
-  if (newPitchers.length != 0) {
+  if (newPitchers.length !== 0) {
     let message = newPitchers[0].data.name
 
     if (currentPitching.length > 1) {
@@ -228,15 +251,13 @@ function sendNotifications () {
 
     message += 'pitching!'
 
-    chrome.runtime.sendMessage({
-      source: 'notification',
-      data: {
-        type: 'basic',
-        title: `Batter Up!`,
-        message: message,
-        iconUrl: '../../icons/icon128.png'
-      }
-    })
+    notifData = {
+      type: 'basic',
+      title: `Batter Up!`,
+      message: message,
+      iconUrl: '../../icons/icon128.png'
+
+    }
   }
 
   // reset
@@ -245,4 +266,22 @@ function sendNotifications () {
 
   currentBatting = []
   currentPitching = []
+
+  if (notifData) {
+    chrome.notifications.create('', notifData, null)
+  }
+}
+
+function getNotifSetting () {
+  chrome.storage.sync.get(['notif'], function (result) {
+    if (result[0]) {
+      showNotification = result[0]['notif']
+    }
+  })
+}
+
+function saveNotifSettings () {
+  chrome.storage.sync.set({
+    'notif': showNotification
+  }, function () {})
 }
