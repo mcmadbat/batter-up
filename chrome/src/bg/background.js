@@ -8,6 +8,8 @@ let intervalObj = setInterval(getData, pollingInterval)
 let currentBatting = [], previousCurrentBatting = []
 let currentPitching = [], previousCurrentPitching = []
 
+let toRemove = []
+
 chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
   if (req.source === 'popup') {
     if (req.action === 'poll') {
@@ -25,19 +27,12 @@ chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
       getData()
       intervalObj = setInterval(getData, pollingInterval)
     } else if (req.action === 'delete') {
-      clearInterval(intervalObj)
-
       let id = req.data
 
-      // remove from list
-      console.log(playerIds.filter(x => x != id))
-
-      playerIds = playerIds.filter(x => x != id)
-
-      pushIdsToStorage()
-      
-      getData()
-      intervalObj = setInterval(getData, pollingInterval)
+      // actually removes it on the completion of the next request
+      if (!toRemove.includes(id)) {
+        toRemove.push(id)
+      }
     }
   }
 })
@@ -71,12 +66,15 @@ function onSuccess(response) {
   let games = response.data
   let rows = []
 
+  // remove the ids that have since been removed
+  playerIds = playerIds.filter(x => !toRemove.includes(x))
+  toRemove = []
+  
   // clear the table body
   $('#tbody').html('')
 
   // proccess the response and find the relevant information for the players
   playerIds
-    .filter(x => playerIds.includes(x))
     .forEach(id => {
 
     let game = games.find(game => game.players && game.players.map(x => x.id).includes(id))
