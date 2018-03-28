@@ -215,7 +215,12 @@ function sendNotifications () {
     }
   })
 
-  if (newBatters.length != 0) {
+  badgeCount = currentBatting.length + currentPitching.length
+  
+  // by now the badgecount should be set
+  chrome.browserAction.setBadgeText({text: badgeCount.toString()})
+
+  if (newBatters.length !== 0) {
     let message = newBatters[0].data.name
 
     if (currentBatting.length > 1) {
@@ -235,7 +240,7 @@ function sendNotifications () {
     }
   }
 
-  if (newPitchers.length != 0) {
+  if (newPitchers.length !== 0) {
     let message = newPitchers[0].data.name
 
     if (currentPitching.length > 1) {
@@ -265,9 +270,6 @@ function sendNotifications () {
   if (notifData) {
     chrome.notifications.create('', notifData, null)
   }
-
-  // by now the badgecount should be set
-  chrome.browserAction.setBadgeText({text: badgeCount.toString()})
 }
 
 function getNotifSetting () {
