@@ -274,8 +274,6 @@ function sendNotifications () {
       message: message,
       iconUrl: '../../icons/icon128.png'
     }
-
-
   }
 
   // reset
