@@ -18,7 +18,7 @@ chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
 
     req.data
       .sort((a,b) => {
-        // complex sorting algorithm 
+        // complex sorting algorithm
         // basically try to "estimate" how long until a player is playing again
         if (a.data.isPitching) {
           return -1
@@ -79,7 +79,7 @@ let badgeCount = 0
 // populating table
 // expecting data to be an array of well formed json objects
 function getOrder(id, data) {
-  let orderTxt 
+  let orderTxt
   let bold = false
 
   if (!data.gameStatus) {
@@ -135,7 +135,7 @@ function getMLBTVHtml(data) {
   }
 
   //return `<a href=${mlbtv}>MLB.TV</a>`
-  return `<button id=mlbtv_${name} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV</button>`
+  return `<button id=mlbtv_${name} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV <i class="mlbtv-link-icon material-icons">launch</i></button>`
 }
 
 function populateRow(rawData) {
@@ -144,7 +144,7 @@ function populateRow(rawData) {
 
   let link = getMLBTVHtml(rawData.data)
   let html = convertToRow(rawData.id, rawData.data.img, rawData.data.name, order, position, link)
-  
+
   $('#tbody').append(html)
 
   // add listener for remove buttons
@@ -159,7 +159,7 @@ function populateRow(rawData) {
     element.addEventListener('click', openTab)
   })
 
-  // on error 
+  // on error
   Array.from(document.getElementsByClassName('p-icon')).forEach(element => {
     element.addEventListener('error', handleImgNotFound)
   })
@@ -169,10 +169,11 @@ function populateRow(rawData) {
 function convertToRow(id, img, name, order, position, mlbtv) {
   return `
     <tr id=${id}>
-      <td scope="row"><img class='p-icon' id=img_${id} src=${img}></img><b>${name}</b> <i>${position}</i></td>
+      <td scope="row"><div class="image-cropper"><img class='p-icon' id=img_${id} src=${img}></img></div></td>
+      <td><b>${name}</b>, <i>${position}</i></td>
       <td>${order}</td>
       <td>${mlbtv}</td>
-      <td><button id=btn_${id} name=${id} class='btn btn-danger remove-button'> remove</button></td>
+      <td><button id=btn_${id} name=${id} class='btn remove-button'>X</button></td>
     </tr>
   `
 }
@@ -183,19 +184,19 @@ function handleIdInput() {
 
   if (player.id && player.id !== 0) {
     sendMessageToBackGround('insert', player.id)
-  } 
+  }
 }
 
 function openTab(args) {
-  let link = args.target.value 
-  chrome.tabs.create({url: link}) 
+  let link = args.target.value
+  chrome.tabs.create({url: link})
 }
 
 
 function remove (args) {
   let id = args.target.name
-  
-  // remove from list 
+
+  // remove from list
   $(`#${id}`).html('')
 
   sendMessageToBackGround('delete', id)
@@ -239,4 +240,3 @@ function handleNotifBtnClick(args) {
 
   $('#notifBtn').attr('class', newClass).html(text)
 }
-
