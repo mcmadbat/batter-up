@@ -10,6 +10,12 @@ parser.parse = data => {
 
   let today = data.dates[0]
 
+  // if for some reason there are no games today then just return nothing
+  if (!today) {
+    debug(`Today had no games!!!`)
+    return response
+  }
+
   debug(`parsing ${today.totalGames} games (${today.totalGamesInProgress} in progress)`)
 
   let games = data.dates[0].games
