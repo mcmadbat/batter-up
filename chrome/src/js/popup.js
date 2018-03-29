@@ -132,7 +132,6 @@ function populateRow (rawData) {
 
   let link = getMLBTVHtml(rawData.data)
   let html = convertToRow(rawData.id, rawData.data.img, rawData.data.name, order, position, link)
-
   $('#tbody').append(html)
 
   // add listener for remove buttons

@@ -98,7 +98,6 @@ function onSuccess (response) {
     intervalObj = setInterval(getData, curInterval)
     curInterval = pollingInterval
   }
-
   // clear the table body
   $('#tbody').html('')
 
