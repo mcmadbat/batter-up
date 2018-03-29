@@ -158,7 +158,7 @@ function populateRow (rawData) {
 function convertToRow (id, img, name, order, position, mlbtv) {
   return `
     <tr id=${id}>
-      <td scope="row"><div class="image-cropper"><img class='p-icon' id=img_${id} src=${img}></img></div></td>
+      <td scope="row"><img class='p-icon' id=img_${id} src=${img}></img></td>
       <td><b>${name}</b>, <i>${position}</i></td>
       <td>${order}</td>
       <td>${mlbtv}</td>
@@ -174,7 +174,11 @@ function handleIdInput () {
   if (player.id && player.id !== 0) {
     sendMessageToBackGround('insert', player.id)
   }
+}
 
+function openTab(args) {
+  let link = args.target.value
+  chrome.tabs.create({url: link})
   $('#nameInput').val('')
 }
 
