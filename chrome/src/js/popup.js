@@ -168,10 +168,16 @@ function convertToRow (id, img, name, order, position, mlbtv) {
 
 function handleIdInput () {
   let name = $('#nameInput').val()
-  let player = findPlayerByName(name)
+  let id = $('#playerId').val()
+
+  let player = findPlayer(name, id)
 
   if (player.id && player.id !== 0) {
     sendMessageToBackGround('insert', player.id)
+    $('#nameInput').val('')
+    $('#playerId').val('')
+
+    console.log('here')
   }
 }
 

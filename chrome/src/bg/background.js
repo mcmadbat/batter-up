@@ -1,5 +1,5 @@
 // in ms
-const pollingInterval = 10100
+const pollingInterval = 6000
 
 // sleep longer if no games currently up
 const sleepPollingInterval = 1000 * 60
