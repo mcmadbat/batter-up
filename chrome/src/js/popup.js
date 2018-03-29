@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   let link = document.getElementById('addBtn')
   // onClick's logic below:
   link.addEventListener('click', handleIdInput)
@@ -8,21 +8,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 let toggleNotification = true
 
+sendMessageToBackGround('getNotif', null)
+
 // communication without background.js
-chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
   if (req.source === 'background') {
     $('#tbody').html('')
 
-    // reset
-    badgeCount = 0
-
     req.data
-      .sort((a,b) => {
+      .sort((a, b) => {
         // complex sorting algorithm
         // basically try to "estimate" how long until a player is playing again
-        if (a.data.isPitching) {
+        if (a.data.isPitching && !a.data.isSideBatting) {
           return -1
-        } else if (b.data.isPitching) {
+        } else if (b.data.isPitching && !b.data.isSideBatting) {
           return 1
         }
 
@@ -39,23 +38,17 @@ chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
         let left = a.data.order + (a.data.isSideBatting ? -3 : 0)
         let right = b.data.order + (b.data.isSideBatting ? -3 : 0)
 
-        return left-right
+        return left - right
       })
       .forEach(row => {
         populateRow(row)
       })
-
-    // by now the badgecount should be set
-    chrome.browserAction.setBadgeText({text: badgeCount.toString()})
   } else if (req.source === 'notification') {
-    if (toggleNotification) {
-      chrome.notifications.create('', req.data, null)
-    }
+    toggleNotification = req.data
   }
 })
 
-window.onload = function() {
-  chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] })
+window.onload = function () {
   poll()
 }
 
@@ -70,15 +63,13 @@ const positionMap = [
   'LF',
   'CF',
   'RF',
-  'DH'
+  'DH',
+  'PH'
 ]
-
-// how many are batting or pitching
-let badgeCount = 0
 
 // populating table
 // expecting data to be an array of well formed json objects
-function getOrder(id, data) {
+function getOrder (id, data) {
   let orderTxt
   let bold = false
 
@@ -95,10 +86,9 @@ function getOrder(id, data) {
   if (order === -1) {
     if (data.isPitching) {
       if (!data.isSideBatting) {
-        badgeCount++
         return '<b>Pitching</b>'
       } else {
-        return 'Team at bat (Pitching)'
+        return 'Team At Bat (Pitching)'
       }
     }
   } else if (order === 0) {
@@ -113,7 +103,7 @@ function getOrder(id, data) {
   } else if (order <= 9) {
     orderTxt = `Due ${order + 1}th`
   } else {
-    return 'Not Playing'
+    return data.position == 1 ? 'Not Pitching' : 'Not Playing'
   }
 
   // notify if side is not batting
@@ -121,24 +111,22 @@ function getOrder(id, data) {
     orderTxt = `On Defense (${orderTxt})`
   } else if (bold) {
     orderTxt = `<b>${orderTxt}</b>`
-    badgeCount++
   }
 
   return orderTxt
 }
 
-function getMLBTVHtml(data) {
+function getMLBTVHtml (data) {
   let mlbtv = data.mlbTVLink
 
   if (data.gameStatus !== 'L') {
     return ''
   }
 
-  //return `<a href=${mlbtv}>MLB.TV</a>`
-  return `<button id=mlbtv_${name} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV <i class="mlbtv-link-icon material-icons">launch</i></button>`
+  return `<button id=mlbtv_${mlbtv} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV <i class="mlbtv-link-icon material-icons">launch</i></button>`
 }
 
-function populateRow(rawData) {
+function populateRow (rawData) {
   let order = getOrder(rawData.id, rawData.data)
   let position = rawData.data.position ? positionMap[rawData.data.position] : ''
 
@@ -150,6 +138,7 @@ function populateRow(rawData) {
   // add listener for remove buttons
   document.getElementById(`btn_${rawData.id}`).addEventListener('click', remove)
 
+  // remove button
   Array.from(document.getElementsByClassName('remove-button')).forEach(element => {
     element.addEventListener('click', remove)
   })
@@ -166,7 +155,7 @@ function populateRow(rawData) {
 }
 
 // convert data into an html row
-function convertToRow(id, img, name, order, position, mlbtv) {
+function convertToRow (id, img, name, order, position, mlbtv) {
   return `
     <tr id=${id}>
       <td scope="row"><img class='p-icon' id=img_${id} src=${img}></img></td>
@@ -178,7 +167,7 @@ function convertToRow(id, img, name, order, position, mlbtv) {
   `
 }
 
-function handleIdInput() {
+function handleIdInput () {
   let name = $('#nameInput').val()
   let player = findPlayerByName(name)
 
@@ -190,8 +179,13 @@ function handleIdInput() {
 function openTab(args) {
   let link = args.target.value
   chrome.tabs.create({url: link})
+  $('#nameInput').val('')
 }
 
+function openTab (args) {
+  let link = args.target.value
+  chrome.tabs.create({url: link})
+}
 
 function remove (args) {
   let id = args.target.name
@@ -203,7 +197,7 @@ function remove (args) {
 }
 
 // send a message to the background
-function sendMessageToBackGround(action, data) {
+function sendMessageToBackGround (action, data) {
   chrome.runtime.sendMessage({
     source: 'popup',
     action: action,
@@ -212,30 +206,34 @@ function sendMessageToBackGround(action, data) {
 }
 
 // polls the background.js to get an update
-function poll() {
+function poll () {
   chrome.runtime.sendMessage({
-    source:'popup',
-    action:'poll'
+    source: 'popup',
+    action: 'poll'
   })
 }
 
-function handleImgNotFound(args) {
+function handleImgNotFound (args) {
   let id = args.target.id
 
   $(`#${id}`).attr('src', `http://riyadhrugby.com/mainbase/here/wp-content/uploads/2016/11/01_img_hero_player_generic.png`)
 }
 
-function handleNotifBtnClick(args) {
+function handleNotifBtnClick (args) {
+  toggleNotification = !toggleNotification
+  changeNotifButton(toggleNotification)
+  sendMessageToBackGround('toggleNotif', toggleNotification)
+}
+
+function changeNotifButton (toggle) {
   let newClass = `btn `
   let text = 'Turn Off Notifications'
 
-  if (toggleNotification) {
+  if (toggle) {
     newClass += ` btn-primary`
-    toggleNotification = false
     text = 'Turn On Notifications'
   } else {
     newClass += ` btn-danger`
-    toggleNotification = true
   }
 
   $('#notifBtn').attr('class', newClass).html(text)
