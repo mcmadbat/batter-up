@@ -92,7 +92,7 @@ function onSuccess (response) {
     // set to longer term
     intervalObj = setInterval(getData, sleepPollingInterval)
     curInterval = sleepPollingInterval
-  } else if (curInterval != pollingInterval){
+  } else if (curInterval != pollingInterval) {
     clearInterval(intervalObj)
     // set to longer term
     intervalObj = setInterval(getData, curInterval)
@@ -233,7 +233,7 @@ function sendNotifications () {
   })
 
   badgeCount = currentBatting.length + currentPitching.length
-  
+
   // by now the badgecount should be set
   chrome.browserAction.setBadgeText({text: badgeCount.toString()})
 
