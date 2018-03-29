@@ -43,7 +43,6 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
       .forEach(row => {
         populateRow(row)
       })
-
   } else if (req.source === 'notification') {
     toggleNotification = req.data
   }
@@ -124,7 +123,7 @@ function getMLBTVHtml (data) {
     return ''
   }
 
-  return `<button id=mlbtv_${name} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV <i class="mlbtv-link-icon material-icons">launch</i></button>`
+  return `<button id=mlbtv_${mlbtv} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV <i class="mlbtv-link-icon material-icons">launch</i></button>`
 }
 
 function populateRow (rawData) {
