@@ -14,6 +14,7 @@ let currentBatting = [], previousCurrentBatting = []
 let currentPitching = [], previousCurrentPitching = []
 
 let badgeCount = 0
+let showNotification = true
 
 chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
   if (req.source === 'popup') {
@@ -46,6 +47,7 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
       showNotification = req.data
       saveNotifSettings()
     } else if (req.action === 'getNotif') {
+      console.log(`sent ${showNotification}`)
       chrome.runtime.sendMessage({
         source: 'notification',
         data: showNotification
@@ -54,7 +56,6 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
   }
 })
 
-let showNotification = true
 const playerIdKey = 'playerIds'
 
 let playerIds = []
@@ -292,9 +293,12 @@ function sendNotifications () {
 
 function getNotifSetting () {
   chrome.storage.sync.get(['notif'], function (result) {
-
     if (result) {
       showNotification = result['notif']
+
+      if (showNotification == undefined) {
+        showNotification = true
+      }
     }
   })
 }
