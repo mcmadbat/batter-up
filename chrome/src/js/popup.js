@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('notifBtn').addEventListener('click', handleNotifBtnClick)
 })
 
-let toggleNotification 
+let toggleNotification = true
 
 sendMessageToBackGround('getNotif', null)
 
