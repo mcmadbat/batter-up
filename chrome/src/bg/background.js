@@ -194,7 +194,7 @@ function pushIdsToStorage () {
   }
 
   data[playerIdKey] = playerIds
-
+  
   // set player IDS
   chrome.storage.sync.set(data, function () {
   })
