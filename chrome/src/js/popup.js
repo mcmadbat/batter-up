@@ -45,6 +45,7 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
       })
   } else if (req.source === 'notification') {
     toggleNotification = req.data
+    changeNotifButton(toggleNotification)
   }
 })
 
@@ -168,10 +169,16 @@ function convertToRow (id, img, name, order, position, mlbtv) {
 
 function handleIdInput () {
   let name = $('#nameInput').val()
-  let player = findPlayerByName(name)
+  let id = $('#playerId').val()
+
+  let player = findPlayer(name, id)
 
   if (player.id && player.id !== 0) {
     sendMessageToBackGround('insert', player.id)
+    $('#nameInput').val('')
+    $('#playerId').val('')
+  } else {
+    alert('Player not found. Please use the autocomplete.')
   }
 }
 
@@ -228,7 +235,7 @@ function changeNotifButton (toggle) {
   let newClass = `btn `
   let text = 'Turn Off Notifications'
 
-  if (toggle) {
+  if (!toggle) {
     newClass += ` btn-primary`
     text = 'Turn On Notifications'
   } else {

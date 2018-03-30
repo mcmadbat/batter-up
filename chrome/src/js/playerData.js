@@ -6,11 +6,40 @@ function getPlayerData () {
   })
 }
 
+// always assume player is correct
+function findPlayer (name, id) {
+  let numFound = 0
+
+  _rawData.data.forEach(p => {
+    if (p.name == name) {
+      numFound++
+    }
+  })
+
+  // if only one guy then just do normal return
+  if (numFound < 2) {
+    return findPlayerByName(name)
+  }
+
+  let player = findPlayerById(id)
+
+  if (player.name == name) {
+    return player
+  } 
+
+  return {
+    name: 'A Player',
+    position: 0,
+    team: 'N/A'
+  }
+}
+
 function findPlayerById (id) {
   let obj = {
     name: 'A Player',
     position: 0,
-    team: 'N/A'
+    team: 'N/A',
+    id: 0
   }
 
   let player = _rawData.data.find(x => x.id == id)
@@ -19,6 +48,7 @@ function findPlayerById (id) {
     obj.name = player.name
     obj.position = player.position
     obj.team = player.team
+    obj.id = player.id
   } else {
     console.log('cant find ' + id)
   }

@@ -1,5 +1,5 @@
 // in ms
-const pollingInterval = 10100
+const pollingInterval = 6000
 
 // sleep longer if no games currently up
 const sleepPollingInterval = 1000 * 60
@@ -70,9 +70,6 @@ const headshotURL = `http://mlb.mlb.com/mlb/images/players/head_shot/`
 
 // cached data
 let cachedData = []
-
-// initial
-getData()
 
 function getData () {
   $.ajax({
@@ -195,6 +192,9 @@ function pushIdsToStorage () {
   let data = {
     playerIdKey: playerIds
   }
+
+  data[playerIdKey] = playerIds
+
   // set player IDS
   chrome.storage.sync.set(data, function () {
   })
@@ -203,8 +203,11 @@ function pushIdsToStorage () {
 function getIdsFromStorage () {
   // load player IDs
   chrome.storage.sync.get([playerIdKey], function (result) {
-    if (result[0]) {
-      playerIds = result[0][playerIdKey].ids
+    if (result[playerIdKey]) {
+      playerIds = result[playerIdKey]
+
+      // initial
+      getData()
     }
   })
 }
@@ -289,8 +292,9 @@ function sendNotifications () {
 
 function getNotifSetting () {
   chrome.storage.sync.get(['notif'], function (result) {
-    if (result[0]) {
-      showNotification = result[0]['notif']
+
+    if (result) {
+      showNotification = result['notif']
     }
   })
 }
