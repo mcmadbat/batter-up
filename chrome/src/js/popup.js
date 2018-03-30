@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('notifBtn').addEventListener('click', handleNotifBtnClick)
 })
 
-let toggleNotification = true
+let toggleNotification 
 
 sendMessageToBackGround('getNotif', null)
 
@@ -45,6 +45,7 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
       })
   } else if (req.source === 'notification') {
     toggleNotification = req.data
+    changeNotifButton(toggleNotification)
   }
 })
 
@@ -176,8 +177,8 @@ function handleIdInput () {
     sendMessageToBackGround('insert', player.id)
     $('#nameInput').val('')
     $('#playerId').val('')
-
-    console.log('here')
+  } else {
+    alert('Player not found. Please use the autocomplete.')
   }
 }
 
@@ -234,7 +235,7 @@ function changeNotifButton (toggle) {
   let newClass = `btn `
   let text = 'Turn Off Notifications'
 
-  if (toggle) {
+  if (!toggle) {
     newClass += ` btn-primary`
     text = 'Turn On Notifications'
   } else {
