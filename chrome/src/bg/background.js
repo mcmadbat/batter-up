@@ -15,6 +15,7 @@ let currentPitching = [], previousCurrentPitching = []
 
 let badgeCount = 0
 let showNotification = true
+let isMuted = false
 
 chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
   if (req.source === 'popup') {
@@ -47,11 +48,21 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
       showNotification = req.data
       saveNotifSettings()
     } else if (req.action === 'getNotif') {
-      console.log(`sent ${showNotification}`)
+      console.log(`sent showNotification=${showNotification}`)
       chrome.runtime.sendMessage({
         source: 'notification',
         data: showNotification
       })
+    } else if (req.action === 'getIsMuted') {
+      console.log(`sent isMuted=${isMuted}`)
+      chrome.runtime.sendMessage({
+        source: 'mute',
+        data: isMuted
+      })
+    } else if (req.action === 'toggleMute') {
+      isMuted = !isMuted
+      console.log(`toggled isMute=${isMuted}`)
+      saveMuteSettings()
     }
   }
 })
@@ -64,6 +75,7 @@ chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] })
 
 getNotifSetting()
 getIdsFromStorage()
+getMuteSettings()
 
 const mlbTVRootURL = `https://www.mlb.com/tv/g`
 const URL = `https://mcmadbat.me/batterup/`
@@ -287,6 +299,7 @@ function sendNotifications () {
   currentPitching = []
 
   if (notifData) {
+    playAudioCue()
     chrome.notifications.create('', notifData, null)
   }
 }
@@ -307,4 +320,29 @@ function saveNotifSettings () {
   chrome.storage.sync.set({
     'notif': showNotification
   }, function () {})
+}
+
+function playAudioCue() {
+  let cue = new Audio('../../audio/notification.mp3')
+  if (!isMuted) {
+    cue.play()
+  }
+}
+
+function saveMuteSettings() {
+  chrome.storage.sync.set( {
+    'isMuted' : isMuted
+  }, function() {})
+}
+
+function getMuteSettings() {
+  chrome.storage.sync.get(['isMuted'], function (result) {
+    if (result) {
+      isMuted = result['isMuted']
+
+      if (isMuted == undefined) {
+        isMuted = false
+      }
+    }
+  })
 }
