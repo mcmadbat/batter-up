@@ -4,11 +4,14 @@ document.addEventListener('DOMContentLoaded', function () {
   link.addEventListener('click', handleIdInput)
 
   document.getElementById('notifBtn').addEventListener('click', handleNotifBtnClick)
+  document.getElementById('muteBtn').addEventListener('click', hanldeMuteBtnClick)
 })
 
 let toggleNotification = true
+let isMuted = false
 
 sendMessageToBackGround('getNotif', null)
+sendMessageToBackGround('getIsMuted', null)
 
 // communication without background.js
 chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
@@ -46,6 +49,9 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
   } else if (req.source === 'notification') {
     toggleNotification = req.data
     changeNotifButton(toggleNotification)
+  } else if (req.source === 'mute') {
+    isMuted = req.data
+    changeMuteBtn(isMuted)
   }
 })
 
@@ -243,4 +249,24 @@ function changeNotifButton (toggle) {
   }
 
   $('#notifBtn').attr('class', newClass).html(text)
+}
+
+function hanldeMuteBtnClick(args) {
+  isMuted = !isMuted
+  changeMuteBtn(isMuted)
+  sendMessageToBackGround('toggleMute', isMuted)
+}
+
+function changeMuteBtn(toggle) {
+  let newClass = `btn `
+  let text = 'Mute'
+
+  if (toggle) {
+    newClass += ` btn-primary`
+    text = 'Unmute'
+  } else {
+    newClass += ` btn-danger`
+  }
+
+  $('#muteBtn').attr('class', newClass).html(text)
 }
