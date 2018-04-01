@@ -129,6 +129,7 @@ function onSuccess (response) {
       }
 
       if (game) {
+        console.log(game)
         row.data.order = 99
 
         row.data.mlbTVLink = `${mlbTVRootURL}${game.gamePk}`
@@ -143,6 +144,15 @@ function onSuccess (response) {
         // treat batters and pitchers differently
         if (row.data.position == 1) {
           row.data.isPitching = game.currentAwayPitcher === id || game.currentHomePitcher === id
+
+          if (id === game.currentAwayPitcher && game.currentTeamAtBat === 'away') {
+            row.data.isSideBatting = true
+          } 
+
+          if (id === game.currentHomePitcher && game.currentTeamAtBat === 'home') {
+            row.data.isSideBatting = true
+          }
+
           row.data.order = row.data.isPitching ? -1 : 99
         }
 
