@@ -131,7 +131,6 @@ function onSuccess (response) {
       }
 
       if (game) {
-        console.log(game)
         row.data.order = 99
 
         row.data.mlbTVLink = `${mlbTVRootURL}${game.gamePk}`
@@ -293,7 +292,6 @@ function sendNotifications () {
   }
 
   if (newPitchers.length !== 0) {
-    console.log(newPitchers[0])
     let message = newPitchers[0].data.name
     gameLink = newPitchers[0].data.mlbTVLink
 
