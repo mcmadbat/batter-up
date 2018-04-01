@@ -17,6 +17,8 @@ let badgeCount = 0
 let showNotification = true
 let isMuted = false
 
+let notifMap = {}
+
 chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
   if (req.source === 'popup') {
     if (req.action === 'poll') {
@@ -143,6 +145,15 @@ function onSuccess (response) {
         // treat batters and pitchers differently
         if (row.data.position == 1) {
           row.data.isPitching = game.currentAwayPitcher === id || game.currentHomePitcher === id
+
+          if (id === game.currentAwayPitcher && game.currentTeamAtBat === 'away') {
+            row.data.isSideBatting = true
+          } 
+
+          if (id === game.currentHomePitcher && game.currentTeamAtBat === 'home') {
+            row.data.isSideBatting = true
+          }
+
           row.data.order = row.data.isPitching ? -1 : 99
         }
 
@@ -230,10 +241,17 @@ function sendNotifications () {
     return
   }
 
+  // clear the map
+  notifMap = {}
+
   let notifData = null
 
   let newBatters = []
   let newPitchers = []
+
+  let buttons = [{title: 'MLB.TV'}]
+
+  let gameLink
 
   currentBatting.forEach(batter => {
     if (!previousCurrentBatting.find(x => x.id == batter.id)) {
@@ -254,6 +272,7 @@ function sendNotifications () {
 
   if (newBatters.length !== 0) {
     let message = newBatters[0].data.name
+    gameLink = newBatters[0].data.mlbTVLink
 
     if (currentBatting.length > 1) {
       message += ` and ${currentBatting.length - 1} others are `
@@ -267,13 +286,14 @@ function sendNotifications () {
       type: 'basic',
       title: `Batter Up!`,
       message: message,
-      iconUrl: '../../icons/icon128.png'
-
+      iconUrl: '../../icons/icon128.png',
+      buttons
     }
   }
 
   if (newPitchers.length !== 0) {
     let message = newPitchers[0].data.name
+    gameLink = newPitchers[0].data.mlbTVLink
 
     if (currentPitching.length > 1) {
       message += ` and ${currentPitching.length - 1} others are `
@@ -287,7 +307,8 @@ function sendNotifications () {
       type: 'basic',
       title: `Batter Up!`,
       message: message,
-      iconUrl: '../../icons/icon128.png'
+      iconUrl: '../../icons/icon128.png',
+      buttons
     }
   }
 
@@ -300,7 +321,9 @@ function sendNotifications () {
 
   if (notifData) {
     playAudioCue()
-    chrome.notifications.create('', notifData, null)
+    chrome.notifications.create('', notifData, id => {
+      notifMap[id] = gameLink
+    })
   }
 }
 
@@ -346,3 +369,10 @@ function getMuteSettings() {
     }
   })
 }
+
+chrome.notifications.onButtonClicked.addListener((notifId, btnId) => {
+  if (notifMap[notifId]) {
+    // open a new tab
+    chrome.tabs.create({url: notifMap[notifId]})
+  }
+})
