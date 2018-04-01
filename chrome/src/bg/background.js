@@ -237,10 +237,6 @@ function getIdsFromStorage () {
 }
 
 function sendNotifications () {
-  if (!showNotification) {
-    return
-  }
-
   // clear the map
   notifMap = {}
 
@@ -319,7 +315,7 @@ function sendNotifications () {
   currentBatting = []
   currentPitching = []
 
-  if (notifData) {
+  if (notifData && showNotification) {
     playAudioCue()
     chrome.notifications.create('', notifData, id => {
       notifMap[id] = gameLink
