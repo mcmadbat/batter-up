@@ -98,4 +98,5 @@ function getUpdatedRawPlayerData () {
 
 function updateRawPlayerData (response) {
   _rawData = response
+  updateAutocomplete(getPlayerData())
 }

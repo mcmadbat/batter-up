@@ -1,9 +1,14 @@
 $(function () {
   let players = getPlayerData()
 
+  updateAutocomplete(players)
+})
+
+function updateAutocomplete(playerData) {
+  console.log(`updated ${playerData.length}`)
   $('#nameInput').autocomplete({
     minLength: 2,
-    source: players,
+    source: playerData,
     messages: {
       noResults: '',
       results: function () {}
@@ -24,4 +29,4 @@ $(function () {
         .append(`<div>${item.label} <i>${item.team}</i></div>`)
         .appendTo(ul)
     }
-})
+}
