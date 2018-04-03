@@ -6,7 +6,6 @@
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
         rel="stylesheet">
-  <!-- <link rel="stylesheet" href="css/index.css"> -->
   <style type="text/css">
 
     #mainPopup {
@@ -116,22 +115,20 @@
   <script src="src/js/rawData.js"></script>
   <script src="src/js/jquery.js"></script>
   <script src="src/js/jquery-ui.js"></script>
-  <script src="src/js/playerData.js"></script>
   <script src="src/js/autocomplete.js"></script>
+  <script src="src/js/playerData.js"></script>
   <script src="src/js/popup.js"></script>
 </head>
 <div id='mainPopup'>
-<center>
+  <center>
     <div class = "ui-widget">
-        <input type='text' id='nameInput' placeholder="Search and Add a Player" />
-
+      <input type='text' id='nameInput' placeholder="Search and Add a Player" />
       <input type="hidden" id="playerId"/>
       <button id='addBtn' class='btn btn-primary'>Add</button>
     </div>
   </center>
   <div class = 'table-div'>
     <table class="table table-responsive" id = "table">
-
       <tbody id='tbody'>
       </tbody>
     </table>

@@ -117,7 +117,13 @@ function onSuccess (response) {
   playerIds
     .filter(x => playerIds.includes(x))
     .forEach(id => {
+      // if there are two games find the one that is live
       let game = games.find(game => game.players && game.players.map(x => x.id).includes(id))
+      let liveGame = games.find(game => game.players && game.players.map(x => x.id).includes(id) && game.gameStatus.abstractGameCode == 'L')
+
+      if (liveGame) {
+        game = liveGame
+      }
 
       let row = {
         id,
@@ -177,11 +183,11 @@ function onSuccess (response) {
           row.data.order = -1
         }
 
-        if (row.data.isSideBatting && row.data.order == 0) {
+        if (row.data.isSideBatting && row.data.order == 0 && game.gameStatus.abstractGameCode == 'L') {
           currentBatting.push(row)
         }
 
-        if (row.data.isPitching && !row.data.isSideBatting) {
+        if (row.data.isPitching && !row.data.isSideBatting && game.gameStatus.abstractGameCode == 'L') {
           currentPitching.push(row)
         }
 
