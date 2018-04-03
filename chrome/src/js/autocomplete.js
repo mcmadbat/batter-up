@@ -1,9 +1,17 @@
 $(function () {
-  let players = getPlayerData()
+  // inital set
+  let players = _rawData.data.map(x => {
+    x.label = x.name
+    return x
+  })
 
+  updateAutocomplete(players)
+})
+
+function updateAutocomplete(playerData) {
   $('#nameInput').autocomplete({
     minLength: 2,
-    source: players,
+    source: playerData,
     messages: {
       noResults: '',
       results: function () {}
@@ -24,4 +32,4 @@ $(function () {
         .append(`<div>${item.label} <i>${item.team}</i></div>`)
         .appendTo(ul)
     }
-})
+}
