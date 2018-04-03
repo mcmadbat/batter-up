@@ -5,7 +5,6 @@ $(function () {
 })
 
 function updateAutocomplete(playerData) {
-  console.log(`updated ${playerData.length}`)
   $('#nameInput').autocomplete({
     minLength: 2,
     source: playerData,

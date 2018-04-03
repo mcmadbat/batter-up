@@ -117,7 +117,13 @@ function onSuccess (response) {
   playerIds
     .filter(x => playerIds.includes(x))
     .forEach(id => {
+      // if there are two games find the one that is live
       let game = games.find(game => game.players && game.players.map(x => x.id).includes(id))
+      let liveGame = games.find(game => game.players && game.players.map(x => x.id).includes(id) && games.gameStatus.abstractGameCode == 'L')
+
+      if (liveGame) {
+        game = liveGame
+      }
 
       let row = {
         id,
