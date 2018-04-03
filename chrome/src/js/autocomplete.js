@@ -1,5 +1,9 @@
 $(function () {
-  let players = getPlayerData()
+  // inital set
+  let players = _rawData.data.map(x => {
+    x.label = x.name
+    return x
+  })
 
   updateAutocomplete(players)
 })
