@@ -25,7 +25,7 @@ function findPlayer (name, id) {
 
   if (player.name == name) {
     return player
-  } 
+  }
 
   return {
     name: 'A Player',
