@@ -1,3 +1,17 @@
+// google analytics
+var _gaq = _gaq || []
+_gaq.push(['_setAccount', 'UA-117099737-1'])
+_gaq.push(['_trackPageview', '/background'])
+_gaq.push(['_trackPageLoadTime']);
+
+(function () {
+  var ga = document.createElement('script')
+  ga.type = 'text/javascript'; ga.async = true
+  ga.src = 'https://ssl.google-analytics.com/ga.js'
+  var s = document.getElementsByTagName('script')[0]
+  s.parentNode.insertBefore(ga, s)
+})()
+
 // in ms
 const pollingInterval = 6000
 
@@ -154,7 +168,7 @@ function onSuccess (response) {
 
           if (id === game.currentAwayPitcher && game.currentTeamAtBat === 'away') {
             row.data.isSideBatting = true
-          } 
+          }
 
           if (id === game.currentHomePitcher && game.currentTeamAtBat === 'home') {
             row.data.isSideBatting = true
@@ -224,7 +238,7 @@ function pushIdsToStorage () {
   }
 
   data[playerIdKey] = playerIds
-  
+
   // set player IDS
   chrome.storage.sync.set(data, function () {
   })
@@ -347,20 +361,20 @@ function saveNotifSettings () {
   }, function () {})
 }
 
-function playAudioCue() {
+function playAudioCue () {
   let cue = new Audio('../../audio/notification.mp3')
   if (!isMuted) {
     cue.play()
   }
 }
 
-function saveMuteSettings() {
-  chrome.storage.sync.set( {
-    'isMuted' : isMuted
-  }, function() {})
+function saveMuteSettings () {
+  chrome.storage.sync.set({
+    'isMuted': isMuted
+  }, function () {})
 }
 
-function getMuteSettings() {
+function getMuteSettings () {
   chrome.storage.sync.get(['isMuted'], function (result) {
     if (result) {
       isMuted = result['isMuted']
@@ -376,5 +390,6 @@ chrome.notifications.onButtonClicked.addListener((notifId, btnId) => {
   if (notifMap[notifId]) {
     // open a new tab
     chrome.tabs.create({url: notifMap[notifId]})
+    _gaq.push(['_trackEvent', notifMap[notifId], 'opened mlb.tv'])
   }
 })
