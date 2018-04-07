@@ -144,7 +144,7 @@ function getMLBTVHtml (data) {
     return ''
   }
 
-  return `<button id=mlbtv_${data.name} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV <i class="mlbtv-link-icon material-icons">launch</i></button>`
+  return `<button id=${data.name} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV <i class="mlbtv-link-icon material-icons">launch</i></button>`
 }
 
 function populateRow (rawData) {
@@ -208,7 +208,7 @@ function openTab(args) {
   let link = args.target.value
   chrome.tabs.create({url: link})
   $('#nameInput').val('')
-  _gaq.push(['_trackEvent', args.target.id, 'openTab()'])
+  _gaq.push(['_trackEvent', args.target.id, 'open Tab'])
 }
 
 function remove (args) {
