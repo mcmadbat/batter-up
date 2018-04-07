@@ -1,3 +1,17 @@
+// google analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-117099737-1']);
+_gaq.push(['_trackPageview', '/popup']);
+_gaq.push(['_trackPageLoadTime']);
+
+(function() {
+  var ga = document.createElement('script'); 
+  ga.type = 'text/javascript'; ga.async = true;
+  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; 
+  s.parentNode.insertBefore(ga, s);
+})();
+
 document.addEventListener('DOMContentLoaded', function () {
   let link = document.getElementById('addBtn')
   // onClick's logic below:
@@ -130,7 +144,7 @@ function getMLBTVHtml (data) {
     return ''
   }
 
-  return `<button id=mlbtv_${mlbtv} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV <i class="mlbtv-link-icon material-icons">launch</i></button>`
+  return `<button id=mlbtv_${data.name} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV <i class="mlbtv-link-icon material-icons">launch</i></button>`
 }
 
 function populateRow (rawData) {
@@ -168,7 +182,7 @@ function convertToRow (id, img, name, order, position, mlbtv) {
       <td><b>${name}</b>, <i>${position}</i></td>
       <td>${order}</td>
       <td>${mlbtv}</td>
-      <td><button id=btn_${id} name=${id} class='btn remove-button'>X</button></td>
+      <td><button id=btn_${id} name=${id} value=${name} class='btn remove-button'>X</button></td>
     </tr>
   `
 }
@@ -183,8 +197,10 @@ function handleIdInput () {
     sendMessageToBackGround('insert', player.id)
     $('#nameInput').val('')
     $('#playerId').val('')
+    _gaq.push(['_trackEvent', name, 'add player'])
   } else {
     alert('Player not found. Please use the autocomplete.')
+    _gaq.push(['_trackEvent', name, 'add player (not found)'])
   }
 }
 
@@ -192,11 +208,7 @@ function openTab(args) {
   let link = args.target.value
   chrome.tabs.create({url: link})
   $('#nameInput').val('')
-}
-
-function openTab (args) {
-  let link = args.target.value
-  chrome.tabs.create({url: link})
+  _gaq.push(['_trackEvent', args.target.id, 'openTab()'])
 }
 
 function remove (args) {
@@ -204,6 +216,8 @@ function remove (args) {
 
   // remove from list
   $(`#${id}`).html('')
+
+  _gaq.push(['_trackEvent', args.target.value, 'remove player'])
 
   sendMessageToBackGround('delete', id)
 }
@@ -235,6 +249,7 @@ function handleNotifBtnClick (args) {
   toggleNotification = !toggleNotification
   changeNotifButton(toggleNotification)
   sendMessageToBackGround('toggleNotif', toggleNotification)
+  _gaq.push(['_trackEvent', toggleNotification, 'toggle notification'])
 }
 
 function changeNotifButton (toggle) {
@@ -255,6 +270,7 @@ function hanldeMuteBtnClick(args) {
   isMuted = !isMuted
   changeMuteBtn(isMuted)
   sendMessageToBackGround('toggleMute', isMuted)
+  _gaq.push(['_trackEvent', isMuted, 'mute notification'])
 }
 
 function changeMuteBtn(toggle) {

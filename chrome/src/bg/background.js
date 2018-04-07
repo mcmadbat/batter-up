@@ -1,3 +1,17 @@
+// google analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-117099737-1']);
+_gaq.push(['_trackPageview', '/background']);
+_gaq.push(['_trackPageLoadTime']);
+
+(function() {
+  var ga = document.createElement('script'); 
+  ga.type = 'text/javascript'; ga.async = true;
+  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; 
+  s.parentNode.insertBefore(ga, s);
+})();
+
 // in ms
 const pollingInterval = 6000
 
@@ -376,5 +390,6 @@ chrome.notifications.onButtonClicked.addListener((notifId, btnId) => {
   if (notifMap[notifId]) {
     // open a new tab
     chrome.tabs.create({url: notifMap[notifId]})
+    _gaq.push(['_trackEvent', notifMap[notifId], 'opened mlb.tv'])
   }
 })
