@@ -340,6 +340,7 @@ function sendNotifications () {
     chrome.notifications.create('', notifData, id => {
       notifMap[id] = gameLink
     })
+    _gaq.push(['_trackEvent', gameLink, 'sent notification'])
   }
 }
 
