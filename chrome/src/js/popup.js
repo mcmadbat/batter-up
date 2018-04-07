@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
   link.addEventListener('click', handleIdInput)
 
   document.getElementById('notifBtn').addEventListener('click', handleNotifBtnClick)
-  document.getElementById('muteBtn').addEventListener('click', hanldeMuteBtnClick)
+  document.getElementById('muteBtn').addEventListener('click', handleMuteBtnClick)
 })
 
 let toggleNotification = true
@@ -266,7 +266,7 @@ function changeNotifButton (toggle) {
   $('#notifBtn').attr('class', newClass).html(text)
 }
 
-function hanldeMuteBtnClick(args) {
+function handleMuteBtnClick(args) {
   isMuted = !isMuted
   changeMuteBtn(isMuted)
   sendMessageToBackGround('toggleMute', isMuted)
