@@ -36,7 +36,7 @@ router.post('/playerInfo', function (req, res, next) {
 router.get('/allPlayers', function (req, res, next) {
   mlbClient.getAllPlayers()
     .then(players => {
-      return res.status(200).send({data: players})
+      return res.status(200).send({ data: players })
     })
     .catch(err => {
       debug(err)

@@ -21,6 +21,9 @@ let requestInProgress = false
 // run #
 let runNumber = 0
 
+// separate run counter to make sure no starvation
+let sinceLastRun = 0
+
 manager.init = interval => {
   // continuously do work
   if (!intervalObj) {
@@ -49,7 +52,9 @@ manager.getState = () => {
 
 // increment for now
 let work = () => {
-  if (!requestInProgress) {
+  // wait for last request to finish, if waited too many times then do it anyways
+  if (!requestInProgress || sinceLastRun > 10) {
+    sinceLastRun = 0
     runNumber++
 
     debug(`work run # ${runNumber} started`)
