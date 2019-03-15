@@ -74,6 +74,7 @@ let work = () => {
       debug(`work run # ${runNumber} did not finish successfully`)
     })
   } else {
+    sinceLastRun++
     debug(`previous request not finished`)
   }
 }

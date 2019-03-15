@@ -95,11 +95,12 @@ function getOrder (id, data) {
   let bold = false
 
   if (!data.gameStatus) {
-    return 'Not Playing'
+    // formerly 'not playing'
+    return ''
   } else if (data.gameStatus === 'F') {
-    return 'Game Finished'
+    return ''
   } else if (data.gameStatus !== 'L') {
-    return 'Game Not Started'
+    return 'Game Scheduled'
   }
 
   let order = data.order
@@ -147,12 +148,80 @@ function getMLBTVHtml (data) {
   return `<button id=${data.name} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV <i class="mlbtv-link-icon material-icons">launch</i></button>`
 }
 
+// gets the score data for the game 
+// e.g. TOR 3-1 NYY
+function getGameScoreData(rawData) {
+  // if game not started then don't show score
+  if (!rawData.data.gameStatus || (rawData.data.gameStatus !== 'L' && rawData.data.gameStatus !== 'F' && rawData.data.gameStatus !== 'P') ) {
+    return ''
+  }
+
+  const scoreData = {
+    homeScore: rawData.data.homeScore,
+    awayScore: rawData.data.awayScore,
+    homeTeam: rawData.data.homeTeam,
+    awayTeam: rawData.data.awayTeam
+  }
+
+  // if in preview, i.e. scheduled, just show teams
+  if (rawData.data.gameStatus === 'P') {
+    return `${scoreData.homeTeam} vs ${scoreData.awayTeam}`
+  }
+
+  const bold = rawData.data.gameStatus === 'F'
+
+  const html = `${scoreData.homeTeam} ${scoreData.homeScore} - ${scoreData.awayScore} ${scoreData.awayTeam}`
+
+  if (bold) {
+    return `<b>${html}</b>`
+  } else {
+    return html
+  }
+}
+
+// gets the inning information
+// e.g. BOT 3
+function getInningData(rawData) {
+  // if scheduled then show scheduled time
+  // e.g. 7:05 ET
+  if (rawData.data.gameStatus === 'P' && rawData.data.gameTime) {
+    const dateTime = new Date(rawData.data.gameTime)
+    const hours = dateTime.getHours()
+    const minutes = dateTime.getMinutes().toString()
+    const timeZone = dateTime.toLocaleTimeString('en-us',{timeZoneName:'short'}).split(' ')[2]
+    
+    return `${hours}:${minutes.padStart(2, '0')} ${timeZone}`
+  }
+
+  // final score
+  if (rawData.data.gameStatus === 'F') {
+    return `<b>Final</b>`
+  }
+
+  // if game not started then don't show score
+  if (!rawData.data.gameStatus || rawData.data.gameStatus !== 'L') {
+    return ''
+  }
+
+  const inning = rawData.data.currentInning
+  const side = rawData.data.isTopInning ? 'Top' : 'Bot'
+
+  if (inning) {
+    return `${side} ${inning}`
+  } else {
+    return ''
+  }
+}
+
 function populateRow (rawData) {
   let order = getOrder(rawData.id, rawData.data)
   let position = rawData.data.position ? positionMap[rawData.data.position] : ''
 
+  let scoreData = getGameScoreData(rawData)
+  let inningData = getInningData(rawData)
+
   let link = getMLBTVHtml(rawData.data)
-  let html = convertToRow(rawData.id, rawData.data.img, rawData.data.name, order, position, link)
+  let html = convertToRow(rawData.id, rawData.data.img, rawData.data.name, order, position, link, scoreData, inningData)
   $('#tbody').append(html)
 
   // add listener for remove buttons
@@ -175,12 +244,16 @@ function populateRow (rawData) {
 }
 
 // convert data into an html row
-function convertToRow (id, img, name, order, position, mlbtv) {
+// ScoreData = {homeTeam, awayTeam, homeScore, awayScore}
+function convertToRow (id, img, name, order, position, mlbtv, scoreData, inningData) {
+  let scoreDataHTML = '' 
   return `
     <tr id=${id}>
       <td scope="row"><img class='p-icon' id=img_${id} src=${img}></img></td>
       <td><b>${name}</b>, <i>${position}</i></td>
       <td>${order}</td>
+      <td>${scoreData}</td>
+      <td>${inningData}</td>
       <td>${mlbtv}</td>
       <td><button id=btn_${id} name=${id} value=${name} class='btn remove-button'>X</button></td>
     </tr>
