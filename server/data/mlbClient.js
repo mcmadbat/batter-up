@@ -53,7 +53,7 @@ client.getGames = () => {
 
       games.forEach(game => {
         promises.push(client.getGameInfo(game))
-        //promises.push(client.getGameProgress(game))
+        promises.push(client.getGameProgress(game))
       })
 
       return Promise.all(promises)
@@ -95,7 +95,8 @@ client.getPlayerInfo = players => {
     })
 }
 
-// returns a promise that adds the current inning of the game 
+// NOTE V2 uses 1.1 endpoint which seems faster but also is slower :/
+// returns a promise that adds the current inning of the game
 client.getGameProgressV2 = game => {
   let uri = `${apiRootURLV2}game/${game.gamePk}/feed/live`
   let options = {
@@ -109,6 +110,7 @@ client.getGameProgressV2 = game => {
     })
 }
 
+// for now use this version which uses the old endpoint but is faster it seems like
 client.getGameProgress = game => {
   let uri = `${apiRootURL}game/${game.gamePk}/linescore`
   let options = {

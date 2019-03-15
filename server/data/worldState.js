@@ -33,7 +33,7 @@ state.update = data => {
           }
         })
     }
-    
+
     return state
   } catch (err) {
     debug(`reverting to old state`)

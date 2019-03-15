@@ -2,38 +2,36 @@
 
 let parser = {}
 
+// V2 parser
 parser.parseV2 = (game, response) => {
   try {
     const currentInning = response.liveData.linescore.currentInning
-    const isTopInning = response.liveData.linescore.isTopInning 
-  
+    const isTopInning = response.liveData.linescore.isTopInning
+
     game.currentInning = currentInning
     game.isTopInning = isTopInning
-  
   } catch (error) {
-    // swallow 
-    console.error(error)
+    // swallow
+    // console.error(error)
   }
 
-  return game 
+  return game
 }
 
+// V1 parser
 parser.parse = (game, response) => {
   try {
     const currentInning = response.currentInning
-    const isTopInning = response.isTopInning 
-  
+    const isTopInning = response.isTopInning
+
     game.currentInning = currentInning
     game.isTopInning = isTopInning
-  
   } catch (error) {
-    // swallow 
-    console.error(error)
+    // swallow
+    // console.error(error)
   }
 
-  return game 
+  return game
 }
 
-
-module.exports = parser 
-
+module.exports = parser

@@ -95,11 +95,12 @@ function getOrder (id, data) {
   let bold = false
 
   if (!data.gameStatus) {
-    return 'Not Playing'
+    // formerly 'not playing'
+    return ''
   } else if (data.gameStatus === 'F') {
     return ''
   } else if (data.gameStatus !== 'L') {
-    return 'Game Not Started'
+    return 'Game Scheduled'
   }
 
   let order = data.order
@@ -151,11 +152,9 @@ function getMLBTVHtml (data) {
 // e.g. TOR 3-1 NYY
 function getGameScoreData(rawData) {
   // if game not started then don't show score
-  if (!rawData.data.gameStatus || (rawData.data.gameStatus !== 'L' && rawData.data.gameStatus !== 'F') ) {
+  if (!rawData.data.gameStatus || (rawData.data.gameStatus !== 'L' && rawData.data.gameStatus !== 'F' && rawData.data.gameStatus !== 'P') ) {
     return ''
   }
-
-  const bold = rawData.data.gameStatus === 'F'
 
   const scoreData = {
     homeScore: rawData.data.homeScore,
@@ -163,6 +162,13 @@ function getGameScoreData(rawData) {
     homeTeam: rawData.data.homeTeam,
     awayTeam: rawData.data.awayTeam
   }
+
+  // if in preview, i.e. scheduled, just show teams
+  if (rawData.data.gameStatus === 'P') {
+    return `${scoreData.homeTeam} vs ${scoreData.awayTeam}`
+  }
+
+  const bold = rawData.data.gameStatus === 'F'
 
   const html = `${scoreData.homeTeam} ${scoreData.homeScore} - ${scoreData.awayScore} ${scoreData.awayTeam}`
 
