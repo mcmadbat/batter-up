@@ -97,7 +97,7 @@ function getOrder (id, data) {
   if (!data.gameStatus) {
     return 'Not Playing'
   } else if (data.gameStatus === 'F') {
-    return 'Game Finished'
+    return ''
   } else if (data.gameStatus !== 'L') {
     return 'Game Not Started'
   }
@@ -147,17 +147,52 @@ function getMLBTVHtml (data) {
   return `<button id=${data.name} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV <i class="mlbtv-link-icon material-icons">launch</i></button>`
 }
 
+// gets the score data for the game 
+// e.g. TOR 3-1 NYY
 function getGameScoreData(rawData) {
   // if game not started then don't show score
-  if (!rawData.data.gameStatus || rawData.data.gameStatus !== 'L') {
-    return null
+  if (!rawData.data.gameStatus || (rawData.data.gameStatus !== 'L' && rawData.data.gameStatus !== 'F') ) {
+    return ''
   }
 
-  return {
+  const bold = rawData.data.gameStatus === 'F'
+
+  const scoreData = {
     homeScore: rawData.data.homeScore,
     awayScore: rawData.data.awayScore,
     homeTeam: rawData.data.homeTeam,
     awayTeam: rawData.data.awayTeam
+  }
+
+  const html = `${scoreData.homeTeam} ${scoreData.homeScore} - ${scoreData.awayScore} ${scoreData.awayTeam}`
+
+  if (bold) {
+    return `<b>${html}</b>`
+  } else {
+    return html
+  }
+}
+
+// gets the inning information
+// e.g. BOT 3
+function getInningData(rawData) {
+  // final score
+  if (rawData.data.gameStatus === 'F') {
+    return `<b>Final</b>`
+  }
+
+  // if game not started then don't show score
+  if (!rawData.data.gameStatus || rawData.data.gameStatus !== 'L') {
+    return ''
+  }
+
+  const inning = rawData.data.currentInning
+  const side = rawData.data.isTopInning ? 'Top' : 'Bot'
+
+  if (inning) {
+    return `${side} ${inning}`
+  } else {
+    return ''
   }
 }
 
@@ -166,9 +201,10 @@ function populateRow (rawData) {
   let position = rawData.data.position ? positionMap[rawData.data.position] : ''
 
   let scoreData = getGameScoreData(rawData)
+  let inningData = getInningData(rawData)
 
   let link = getMLBTVHtml(rawData.data)
-  let html = convertToRow(rawData.id, rawData.data.img, rawData.data.name, order, position, link, scoreData)
+  let html = convertToRow(rawData.id, rawData.data.img, rawData.data.name, order, position, link, scoreData, inningData)
   $('#tbody').append(html)
 
   // add listener for remove buttons
@@ -192,18 +228,15 @@ function populateRow (rawData) {
 
 // convert data into an html row
 // ScoreData = {homeTeam, awayTeam, homeScore, awayScore}
-function convertToRow (id, img, name, order, position, mlbtv, scoreData) {
+function convertToRow (id, img, name, order, position, mlbtv, scoreData, inningData) {
   let scoreDataHTML = '' 
-  if (scoreData) {
-    scoreDataHTML = `${scoreData.homeTeam} ${scoreData.homeScore} - ${scoreData.awayScore} ${scoreData.awayTeam}`
-  }
-
   return `
     <tr id=${id}>
       <td scope="row"><img class='p-icon' id=img_${id} src=${img}></img></td>
       <td><b>${name}</b>, <i>${position}</i></td>
       <td>${order}</td>
-      <td>${scoreDataHTML}</td>
+      <td>${scoreData}</td>
+      <td>${inningData}</td>
       <td>${mlbtv}</td>
       <td><button id=btn_${id} name=${id} value=${name} class='btn remove-button'>X</button></td>
     </tr>

@@ -115,6 +115,11 @@ function onSuccess (response) {
   let games = response.data
   let rows = []
 
+  // if for some reason there aren't any games manually set it to an array
+  if (Object.keys(games).length === 0) {
+    games = []
+  }
+
   if (!games.find(x => x.gameStatus.abstractGameCode == 'L') && curInterval != sleepPollingInterval) {
     clearInterval(intervalObj)
     // set to longer term
@@ -152,7 +157,9 @@ function onSuccess (response) {
           homeTeam: null,
           homeScore: 0,
           awayTeam: null, 
-          awayScore: 0
+          awayScore: 0,
+          currentInning: 0,
+          isTopInning: false
         }
       }
 
@@ -191,6 +198,10 @@ function onSuccess (response) {
         row.data.homeScore = game.homeScore ? game.homeScore : 0
         row.data.awayScore = game.awayScore ? game.awayScore : 0
 
+        // inning information
+        row.data.currentInning = game.currentInning 
+        row.data.isTopInning = game.isTopInning
+        
         let homeOrder = game.homeTeam.battingOrder
         let awayOrder = game.awayTeam.battingOrder
 
@@ -256,6 +267,7 @@ function pushIdsToStorage () {
   // set player IDS
   chrome.storage.sync.set(data, function () {
   })
+  
 }
 // storage helpers
 function getIdsFromStorage () {
