@@ -95,6 +95,8 @@ getMuteSettings()
 
 const mlbTVRootURL = `https://www.mlb.com/tv/g`
 const URL = `https://mcmadbat.me/batterup/`
+// debug url
+// const URL = `http://localhost:3000/`
 const headshotURL = `http://mlb.mlb.com/mlb/images/players/head_shot/`
 
 // cached data
@@ -112,6 +114,11 @@ function getData () {
 function onSuccess (response) {
   let games = response.data
   let rows = []
+
+  // if for some reason there aren't any games manually set it to an array
+  if (Object.keys(games).length === 0) {
+    games = []
+  }
 
   if (!games.find(x => x.gameStatus.abstractGameCode == 'L') && curInterval != sleepPollingInterval) {
     clearInterval(intervalObj)
@@ -146,7 +153,13 @@ function onSuccess (response) {
           order: 999,
           isPitching: false,
           isSideBatting: false,
-          img: `${headshotURL}${id}.jpg`
+          img: `${headshotURL}${id}.jpg`,
+          homeTeam: null,
+          homeScore: 0,
+          awayTeam: null, 
+          awayScore: 0,
+          currentInning: 0,
+          isTopInning: false
         }
       }
 
@@ -177,6 +190,18 @@ function onSuccess (response) {
           row.data.order = row.data.isPitching ? -1 : 99
         }
 
+        // team abbreviations 
+        row.data.homeTeam = game.homeTeam.abbreviation
+        row.data.awayTeam = game.awayTeam.abbreviation
+
+        // current scores
+        row.data.homeScore = game.homeScore ? game.homeScore : 0
+        row.data.awayScore = game.awayScore ? game.awayScore : 0
+
+        // inning information
+        row.data.currentInning = game.currentInning 
+        row.data.isTopInning = game.isTopInning
+        
         let homeOrder = game.homeTeam.battingOrder
         let awayOrder = game.awayTeam.battingOrder
 
@@ -209,6 +234,12 @@ function onSuccess (response) {
           row.data.order = 999
           row.data.isPitching = false
         }
+
+        // game time 
+        if (game.gameTime) {
+          row.data.gameTime = game.gameTime
+        }
+
       } else {
       // TODO: have to populate another way
         let playerFromBackup = findPlayerById(id)
@@ -242,6 +273,7 @@ function pushIdsToStorage () {
   // set player IDS
   chrome.storage.sync.set(data, function () {
   })
+  
 }
 // storage helpers
 function getIdsFromStorage () {

@@ -15,6 +15,9 @@ parser.parse = (game, response) => {
   let away = response.teams.away
   let home = response.teams.home
 
+  game.awayTeam.abbreviation = away.team.abbreviation
+  game.homeTeam.abbreviation = home.team.abbreviation
+
   game.awayTeam.battingOrder = away.battingOrder
   game.homeTeam.battingOrder = home.battingOrder
 

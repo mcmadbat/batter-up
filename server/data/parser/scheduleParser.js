@@ -1,5 +1,5 @@
 'use strict'
-let debug = require('debug')('scheduleParser')
+let debug = require('debug')('batter-up:scheduleParser')
 
 let gameParser = require('./gameParser')
 

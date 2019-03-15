@@ -11,6 +11,8 @@ parser.parse = game => {
   let homeTeam = teamParser.parse(game.teams.home.team, true)
   let awayTeam = teamParser.parse(game.teams.away.team, false)
 
+  const gameTime = game.gameDate
+
   let gameStatus = game.status
 
   // set to -1 for games not in progress
@@ -27,7 +29,8 @@ parser.parse = game => {
     awayTeam,
     gameStatus,
     homeScore,
-    awayScore
+    awayScore,
+    gameTime
   }
 }
 

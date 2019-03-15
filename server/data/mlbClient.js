@@ -7,8 +7,10 @@ let request = require('request-promise')
 let scheduleParser = require('./parser/scheduleParser')
 let lineupParser = require('./parser/lineupParser')
 let playerParser = require('./parser/playerParser')
+let lineScoreParser = require('./parser/lineScoreParser')
 
 const apiRootURL = `http://statsapi.mlb.com/api/v1/`
+const apiRootURLV2 = `http://statsapi.mlb.com/api/v1.1/`
 const sportId = 1
 const rosterLookupKey = `40Man`
 
@@ -51,6 +53,7 @@ client.getGames = () => {
 
       games.forEach(game => {
         promises.push(client.getGameInfo(game))
+        promises.push(client.getGameProgress(game))
       })
 
       return Promise.all(promises)
@@ -89,6 +92,35 @@ client.getPlayerInfo = players => {
   return request(options)
     .then(response => {
       return playerParser.parsePlayerInfoAll(response.people)
+    })
+}
+
+// NOTE V2 uses 1.1 endpoint which seems faster but also is slower :/
+// returns a promise that adds the current inning of the game
+client.getGameProgressV2 = game => {
+  let uri = `${apiRootURLV2}game/${game.gamePk}/feed/live`
+  let options = {
+    json: true,
+    uri
+  }
+
+  return request(options)
+    .then(response => {
+      return lineScoreParser.parseV2(game, response)
+    })
+}
+
+// for now use this version which uses the old endpoint but is faster it seems like
+client.getGameProgress = game => {
+  let uri = `${apiRootURL}game/${game.gamePk}/linescore`
+  let options = {
+    json: true,
+    uri
+  }
+
+  return request(options)
+    .then(response => {
+      return lineScoreParser.parse(game, response)
     })
 }
 
