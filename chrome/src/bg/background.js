@@ -94,7 +94,9 @@ getIdsFromStorage()
 getMuteSettings()
 
 const mlbTVRootURL = `https://www.mlb.com/tv/g`
-const URL = `https://mcmadbat.me/batterup/`
+//const URL = `https://mcmadbat.me/batterup/`
+// TODO remember to turn back
+const URL = `http://localhost:3000/`
 const headshotURL = `http://mlb.mlb.com/mlb/images/players/head_shot/`
 
 // cached data
@@ -146,7 +148,11 @@ function onSuccess (response) {
           order: 999,
           isPitching: false,
           isSideBatting: false,
-          img: `${headshotURL}${id}.jpg`
+          img: `${headshotURL}${id}.jpg`,
+          homeTeam: null,
+          homeScore: 0,
+          awayTeam: null, 
+          awayScore: 0
         }
       }
 
@@ -176,6 +182,14 @@ function onSuccess (response) {
 
           row.data.order = row.data.isPitching ? -1 : 99
         }
+
+        // team abbreviations 
+        row.data.homeTeam = game.homeTeam.abbreviation
+        row.data.awayTeam = game.awayTeam.abbreviation
+
+        // current scores
+        row.data.homeScore = game.homeScore ? game.homeScore : 0
+        row.data.awayScore = game.awayScore ? game.awayScore : 0
 
         let homeOrder = game.homeTeam.battingOrder
         let awayOrder = game.awayTeam.battingOrder

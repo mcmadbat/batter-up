@@ -147,12 +147,28 @@ function getMLBTVHtml (data) {
   return `<button id=${data.name} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV <i class="mlbtv-link-icon material-icons">launch</i></button>`
 }
 
+function getGameScoreData(rawData) {
+  // if game not started then don't show score
+  if (!rawData.data.gameStatus || rawData.data.gameStatus !== 'L') {
+    return null
+  }
+
+  return {
+    homeScore: rawData.data.homeScore,
+    awayScore: rawData.data.awayScore,
+    homeTeam: rawData.data.homeTeam,
+    awayTeam: rawData.data.awayTeam
+  }
+}
+
 function populateRow (rawData) {
   let order = getOrder(rawData.id, rawData.data)
   let position = rawData.data.position ? positionMap[rawData.data.position] : ''
 
+  let scoreData = getGameScoreData(rawData)
+
   let link = getMLBTVHtml(rawData.data)
-  let html = convertToRow(rawData.id, rawData.data.img, rawData.data.name, order, position, link)
+  let html = convertToRow(rawData.id, rawData.data.img, rawData.data.name, order, position, link, scoreData)
   $('#tbody').append(html)
 
   // add listener for remove buttons
@@ -175,12 +191,19 @@ function populateRow (rawData) {
 }
 
 // convert data into an html row
-function convertToRow (id, img, name, order, position, mlbtv) {
+// ScoreData = {homeTeam, awayTeam, homeScore, awayScore}
+function convertToRow (id, img, name, order, position, mlbtv, scoreData) {
+  let scoreDataHTML = '' 
+  if (scoreData) {
+    scoreDataHTML = `${scoreData.homeTeam} ${scoreData.homeScore} - ${scoreData.awayScore} ${scoreData.awayTeam}`
+  }
+
   return `
     <tr id=${id}>
       <td scope="row"><img class='p-icon' id=img_${id} src=${img}></img></td>
       <td><b>${name}</b>, <i>${position}</i></td>
       <td>${order}</td>
+      <td>${scoreDataHTML}</td>
       <td>${mlbtv}</td>
       <td><button id=btn_${id} name=${id} value=${name} class='btn remove-button'>X</button></td>
     </tr>
