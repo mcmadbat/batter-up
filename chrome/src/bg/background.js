@@ -94,9 +94,9 @@ getIdsFromStorage()
 getMuteSettings()
 
 const mlbTVRootURL = `https://www.mlb.com/tv/g`
-//const URL = `https://mcmadbat.me/batterup/`
-// TODO remember to turn back
-const URL = `http://localhost:3000/`
+const URL = `https://mcmadbat.me/batterup/`
+// debug url
+// const URL = `http://localhost:3000/`
 const headshotURL = `http://mlb.mlb.com/mlb/images/players/head_shot/`
 
 // cached data
@@ -234,6 +234,12 @@ function onSuccess (response) {
           row.data.order = 999
           row.data.isPitching = false
         }
+
+        // game time 
+        if (game.gameTime) {
+          row.data.gameTime = game.gameTime
+        }
+
       } else {
       // TODO: have to populate another way
         let playerFromBackup = findPlayerById(id)

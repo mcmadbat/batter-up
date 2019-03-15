@@ -182,6 +182,17 @@ function getGameScoreData(rawData) {
 // gets the inning information
 // e.g. BOT 3
 function getInningData(rawData) {
+  // if scheduled then show scheduled time
+  // e.g. 7:05 ET
+  if (rawData.data.gameStatus === 'P' && rawData.data.gameTime) {
+    const dateTime = new Date(rawData.data.gameTime)
+    const hours = dateTime.getHours()
+    const minutes = dateTime.getMinutes().toString()
+    const timeZone = dateTime.toLocaleTimeString('en-us',{timeZoneName:'short'}).split(' ')[2]
+    
+    return `${hours}:${minutes.padStart(2, '0')} ${timeZone}`
+  }
+
   // final score
   if (rawData.data.gameStatus === 'F') {
     return `<b>Final</b>`
