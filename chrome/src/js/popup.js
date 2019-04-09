@@ -270,7 +270,7 @@ function handleIdInput () {
     sendMessageToBackGround('insert', player.id)
     $('#nameInput').val('')
     $('#playerId').val('')
-    _gaq.push(['_trackEvent', name, 'add player'])
+    _gaq.push(['_trackEvent', player.name, 'add player'])
   } else {
     alert('Player not found. Please use the autocomplete.')
     _gaq.push(['_trackEvent', name, 'add player (not found)'])
