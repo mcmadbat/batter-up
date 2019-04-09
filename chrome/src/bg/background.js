@@ -24,8 +24,7 @@ let curInterval = pollingInterval
 let intervalObj = setInterval(getData, pollingInterval)
 
 // needed for notifications
-let currentBatting = [], previousCurrentBatting = []
-let currentPitching = [], previousCurrentPitching = []
+let currentBatting = [], previousCurrentBatting = [], currentPitching = [], previousCurrentPitching = []
 
 let badgeCount = 0
 let showNotification = true
@@ -131,6 +130,7 @@ function onSuccess (response) {
     intervalObj = setInterval(getData, curInterval)
     curInterval = pollingInterval
   }
+
   // clear the table body
   $('#tbody').html('')
 
@@ -144,6 +144,18 @@ function onSuccess (response) {
 
       if (liveGame) {
         game = liveGame
+      }
+
+      // if no game then try to match based on team
+      if (!game) {
+        const foundPlayer = findPlayerById (id);
+        
+        if (foundPlayer) {
+          const team = foundPlayer.team
+
+          game = games.find(game => (game.homeTeam && game.homeTeam.abbreviation === team) 
+            || (game.awayTeam && game.awayTeam.abbreviation === team))
+        }
       }
 
       let row = {
