@@ -63,20 +63,20 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
       showNotification = req.data
       saveNotifSettings()
     } else if (req.action === 'getNotif') {
-      console.log(`sent showNotification=${showNotification}`)
+      // console.log(`sent showNotification=${showNotification}`)
       chrome.runtime.sendMessage({
         source: 'notification',
         data: showNotification
       })
     } else if (req.action === 'getIsMuted') {
-      console.log(`sent isMuted=${isMuted}`)
+      // console.log(`sent isMuted=${isMuted}`)
       chrome.runtime.sendMessage({
         source: 'mute',
         data: isMuted
       })
     } else if (req.action === 'toggleMute') {
       isMuted = !isMuted
-      console.log(`toggled isMute=${isMuted}`)
+      // console.log(`toggled isMute=${isMuted}`)
       saveMuteSettings()
     }
   }
@@ -183,6 +183,10 @@ function onSuccess (response) {
         row.data.gameStatus = game.gameStatus.abstractGameCode
 
         let player = game.players.find(x => x.id === id)
+
+        if (!player) {
+          player = findPlayerById(id)
+        }
 
         row.data.position = player.position
         row.data.name = player.name
