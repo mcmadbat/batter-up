@@ -49,13 +49,11 @@ client.getGames = () => {
       return scheduleParser.parse(response)
     })
     .then(games => {
-      let promises = []
-
-      games.forEach(game => {
-        promises.push(client.getGameInfo(game))
-        promises.push(client.getGameProgress(game))
-      })
-
+      let promises = games.map(game => client.getGameInfo(game))
+      return Promise.all(promises)
+    })
+    .then(games => {
+      let promises = games.map(game => client.getGameProgress(game))
       return Promise.all(promises)
     })
 }

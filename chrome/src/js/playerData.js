@@ -85,7 +85,8 @@ const oneDayInMs = 1000 * 60 * 60 * 24
 
 getUpdatedRawPlayerData()
 
-setInterval(function () { getUpdatedRawPlayerData() }, oneDayInMs)
+// update 4 times a day just in case
+setInterval(function () { getUpdatedRawPlayerData() }, oneDayInMs / 4)
 
 function getUpdatedRawPlayerData () {
   $.ajax({
