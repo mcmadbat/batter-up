@@ -173,6 +173,11 @@ function getGameScoreData(rawData) {
   const html = `${scoreData.homeTeam} ${scoreData.homeScore} - ${scoreData.awayScore} ${scoreData.awayTeam}`
 
   if (bold) {
+    // if postponed then show nothing since there was no score
+    if (rawData.data.isPostponed) {
+      return ``
+    }
+
     return `<b>${html}</b>`
   } else {
     return html
@@ -195,7 +200,13 @@ function getInningData(rawData) {
 
   // final score
   if (rawData.data.gameStatus === 'F') {
-    return `<b>Final</b>`
+    if (rawData.data.isPostponed) {
+      return `<b>Postponed</b>`
+    }
+    
+    // TODO: maybe add information for if there was extra innings
+    
+    return `<b>Final ${inningStr}</b>`
   }
 
   // if game not started then don't show score

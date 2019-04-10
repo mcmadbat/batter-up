@@ -179,8 +179,12 @@ function onSuccess (response) {
         row.data.order = 99
 
         row.data.mlbTVLink = `${mlbTVRootURL}${game.gamePk}`
-
         row.data.gameStatus = game.gameStatus.abstractGameCode
+
+        // this is different from gameStatus
+        // gameStatus can be "final" but game state can be postponed
+        // so have a flag to distinguish between game being finished and cancelled
+        row.data.isPostponed = game.gameStatus.detailedState === 'Postponed'
 
         let player = game.players.find(x => x.id === id)
 
