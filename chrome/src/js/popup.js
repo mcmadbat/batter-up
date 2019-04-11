@@ -206,7 +206,7 @@ function getInningData(rawData) {
     
     // TODO: maybe add information for if there was extra innings
     
-    return `<b>Final ${inningStr}</b>`
+    return `<b>Final</b>`
   }
 
   // if game not started then don't show score
@@ -257,7 +257,6 @@ function populateRow (rawData) {
 // convert data into an html row
 // ScoreData = {homeTeam, awayTeam, homeScore, awayScore}
 function convertToRow (id, img, name, order, position, mlbtv, scoreData, inningData) {
-  let scoreDataHTML = '' 
   return `
     <tr id=${id}>
       <td scope="row"><img class='p-icon' id=img_${id} src=${img}></img></td>
