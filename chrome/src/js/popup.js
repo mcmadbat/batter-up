@@ -321,10 +321,11 @@ function poll () {
   })
 }
 
+const ERR_IMG_URL = chrome.extension.getURL("img/white.jpg")
 function handleImgNotFound (args) {
   let id = args.target.id
 
-  $(`#${id}`).attr('src', `http://riyadhrugby.com/mainbase/here/wp-content/uploads/2016/11/01_img_hero_player_generic.png`)
+  $(`#${id}`).attr('src', ERR_IMG_URL)
 }
 
 function handleNotifBtnClick (args) {
