@@ -32,6 +32,19 @@ let isMuted = false
 
 let notifMap = {}
 
+const mlbTVRootURL = `https://www.mlb.com/tv/g`
+const URL = `https://mcmadbat.me/batterup/`
+// debug url
+// const URL = `http://localhost:3000/`
+const headshotURL = `http://mlb.mlb.com/mlb/images/players/head_shot/`
+
+// cached data
+let cachedData = []
+
+const playerIdKey = 'playerIds'
+
+let playerIds = []
+
 chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
   if (req.source === 'popup') {
     if (req.action === 'poll') {
@@ -82,24 +95,11 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
   }
 })
 
-const playerIdKey = 'playerIds'
-
-let playerIds = []
-
 chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] })
 
 getNotifSetting()
 getIdsFromStorage()
 getMuteSettings()
-
-const mlbTVRootURL = `https://www.mlb.com/tv/g`
-const URL = `https://mcmadbat.me/batterup/`
-// debug url
-// const URL = `http://localhost:3000/`
-const headshotURL = `http://mlb.mlb.com/mlb/images/players/head_shot/`
-
-// cached data
-let cachedData = []
 
 function getData () {
   $.ajax({

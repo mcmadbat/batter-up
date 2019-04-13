@@ -4,9 +4,11 @@
   width: 700px;
   font-family: "Lato", Helvetica, Ubuntu, Arial, sans-serif;
 }
+
 h1 {
   font-size: 2em;
 }
+
 body {
   min-width: 357px;
   overflow-x: hidden;
@@ -28,7 +30,6 @@ img {
 
 #notifBtn {
   margin: 5px;
-
 }
 
 #table tr {

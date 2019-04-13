@@ -145,7 +145,7 @@ function getMLBTVHtml (data) {
     return ''
   }
 
-  return `<button id=${data.name} value=${mlbtv} class='btn btn-link mlbtv-link'>MLB TV <i class="mlbtv-link-icon material-icons">launch</i></button>`
+  return `<button id='btn_${mlbtv}' name='${data.name}' value='${mlbtv}' class='btn btn-link mlbtv-link'>MLB TV <i class="mlbtv-link-icon material-icons">launch</i></button>`
 }
 
 // gets the score data for the game 
@@ -265,7 +265,7 @@ function convertToRow (id, img, name, order, position, mlbtv, scoreData, inningD
       <td>${scoreData}</td>
       <td>${inningData}</td>
       <td>${mlbtv}</td>
-      <td><button id=btn_${id} name=${id} value=${name} class='btn remove-button'>X</button></td>
+      <td><button id=btn_${id} name=${id} value='${name}' class='btn remove-button'>X</button></td>
     </tr>
   `
 }
@@ -291,12 +291,11 @@ function openTab(args) {
   let link = args.target.value
   chrome.tabs.create({url: link})
   $('#nameInput').val('')
-  _gaq.push(['_trackEvent', args.target.id, 'open Tab'])
+  _gaq.push(['_trackEvent', args.target.name, 'open Tab'])
 }
 
 function remove (args) {
   let id = args.target.name
-
   // remove from list
   $(`#${id}`).html('')
 
