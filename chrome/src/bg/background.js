@@ -149,11 +149,11 @@ function onSuccess (response) {
       // if no game then try to match based on team
       if (!game) {
         const foundPlayer = findPlayerById (id);
-        
+
         if (foundPlayer) {
           const team = foundPlayer.team
 
-          game = games.find(game => (game.homeTeam && game.homeTeam.abbreviation === team) 
+          game = games.find(game => (game.homeTeam && game.homeTeam.abbreviation === team)
             || (game.awayTeam && game.awayTeam.abbreviation === team))
         }
       }
@@ -168,7 +168,7 @@ function onSuccess (response) {
           img: `${headshotURL}${id}.jpg`,
           homeTeam: null,
           homeScore: 0,
-          awayTeam: null, 
+          awayTeam: null,
           awayScore: 0,
           currentInning: 0,
           isTopInning: false
@@ -210,7 +210,7 @@ function onSuccess (response) {
           row.data.order = row.data.isPitching ? -1 : 99
         }
 
-        // team abbreviations 
+        // team abbreviations
         row.data.homeTeam = game.homeTeam.abbreviation
         row.data.awayTeam = game.awayTeam.abbreviation
 
@@ -219,9 +219,9 @@ function onSuccess (response) {
         row.data.awayScore = game.awayScore ? game.awayScore : 0
 
         // inning information
-        row.data.currentInning = game.currentInning 
+        row.data.currentInning = game.currentInning
         row.data.isTopInning = game.isTopInning
-        
+
         let homeOrder = game.homeTeam.battingOrder
         let awayOrder = game.awayTeam.battingOrder
 
@@ -255,7 +255,7 @@ function onSuccess (response) {
           row.data.isPitching = false
         }
 
-        // game time 
+        // game time
         if (game.gameTime) {
           row.data.gameTime = game.gameTime
         }
@@ -293,7 +293,7 @@ function pushIdsToStorage () {
   // set player IDS
   chrome.storage.sync.set(data, function () {
   })
-  
+
 }
 // storage helpers
 function getIdsFromStorage () {

@@ -5,10 +5,10 @@ _gaq.push(['_trackPageview', '/popup']);
 _gaq.push(['_trackPageLoadTime']);
 
 (function() {
-  var ga = document.createElement('script'); 
+  var ga = document.createElement('script');
   ga.type = 'text/javascript'; ga.async = true;
   ga.src = 'https://ssl.google-analytics.com/ga.js';
-  var s = document.getElementsByTagName('script')[0]; 
+  var s = document.getElementsByTagName('script')[0];
   s.parentNode.insertBefore(ga, s);
 })();
 
@@ -148,7 +148,7 @@ function getMLBTVHtml (data) {
   return `<button id='btn_${mlbtv}' name='${data.name}' value='${mlbtv}' class='btn btn-link mlbtv-link'>MLB TV <i class="mlbtv-link-icon material-icons">launch</i></button>`
 }
 
-// gets the score data for the game 
+// gets the score data for the game
 // e.g. TOR 3-1 NYY
 function getGameScoreData(rawData) {
   // if game not started then don't show score
@@ -194,7 +194,7 @@ function getInningData(rawData) {
     const hours = dateTime.getHours()
     const minutes = dateTime.getMinutes().toString()
     const timeZone = dateTime.toLocaleTimeString('en-us',{timeZoneName:'short'}).split(' ')[2]
-    
+
     return `${hours}:${minutes.padStart(2, '0')} ${timeZone}`
   }
 
@@ -203,9 +203,9 @@ function getInningData(rawData) {
     if (rawData.data.isPostponed) {
       return `<b>Postponed</b>`
     }
-    
+
     // TODO: maybe add information for if there was extra innings
-    
+
     return `<b>Final</b>`
   }
 
