@@ -14,8 +14,10 @@ _gaq.push(['_trackPageLoadTime']);
 
 document.addEventListener('DOMContentLoaded', function () {
   let link = document.getElementById('addBtn')
+  let yahooAdd = document.getElementById('importBtn')
   // onClick's logic below:
   link.addEventListener('click', handleIdInput)
+  yahooAdd.addEventListener('click', handleYahooImport)
 
   document.getElementById('notifBtn').addEventListener('click', handleNotifBtnClick)
   document.getElementById('muteBtn').addEventListener('click', handleMuteBtnClick)
@@ -285,6 +287,30 @@ function handleIdInput () {
     alert('Player not found. Please use the autocomplete.')
     _gaq.push(['_trackEvent', name, 'add player (not found)'])
   }
+}
+
+function normalizeName (name) {
+  return name.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function populate (html) {
+  let players = html.match(/(?<=[0-9]+".*_blank">).*(?=<\/a>)/gm);
+  players = players.map(player => normalizeName(player));
+  players.forEach(player => {
+    sendMessageToBackGround('insert', findPlayerByName(player).id);
+  });
+}
+
+function handleYahooImport () {
+  let id = $('#yahooInput').val()
+
+  $.ajax({
+    url: `https://baseball.fantasysports.yahoo.com/b1/${id}`,
+    type: 'get',
+    dataType: 'html',
+    crossDomain: true,
+    success: populate
+  })
 }
 
 function openTab(args) {

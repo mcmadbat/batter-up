@@ -20,7 +20,11 @@
   "permissions": [
     "notifications",
     "storage",
-    "tabs"
+    "tabs",
+    "https://baseball.fantasysports.yahoo.com/*",
+    "http://baseball.fantasysports.yahoo.com/*",
+    "https://www.baseball.fantasysports.yahoo.com/*",
+    "http://www.baseball.fantasysports.yahoo.com/*"
   ],
   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'"
 }

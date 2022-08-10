@@ -87,6 +87,24 @@ img {
   font-weight: normal;
 }
 
+#yahooInput {
+  padding: 4px;
+  padding-left: 6px;
+  width: 60%;
+  border: 1px solid lightgray;
+  border-radius: 2px;
+}
+
+#yahooInput:focus {
+  outline: 0;
+}
+
+#yahooInput::placeholder {
+  color: lightgray;
+  font-size: 14px;
+  font-weight: normal;
+}
+
 #addBtn {
   border: none;
 }
