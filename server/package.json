@@ -8,11 +8,11 @@
     "test": "mocha --recursive"
   },
   "dependencies": {
-    "body-parser": "^1.18.3",
+    "body-parser": "^1.20.1",
     "cheerio": "^1.0.0-rc.2",
     "cookie-parser": "~1.4.3",
     "debug": "^2.6.9",
-    "express": "^4.16.4",
+    "express": "^4.18.2",
     "moment": "^2.22.1",
     "morgan": "^1.9.1",
     "mz": "^2.7.0",
